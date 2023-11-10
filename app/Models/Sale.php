@@ -9,11 +9,25 @@ use Illuminate\Support\Facades\Auth;
 
 class Sale extends Model
 {
+    const PAYMENT_METHOD_CASH = 1;
+    const PAYMENT_METHOD_CARD = 2;
+    const PAYMENT_METHOD_CHEQUE = 3;
+    const PAYMENT_METHOD_BANK_TRANSFER = 4;
+    const PAYMENT_METHOD_OTHER = 5;
+    const PAYMENT_METHODS = [
+        self::PAYMENT_METHOD_CASH          => 'Cash',
+        self::PAYMENT_METHOD_CARD          => 'Card',
+        self::PAYMENT_METHOD_CHEQUE        => 'Cheque',
+        self::PAYMENT_METHOD_BANK_TRANSFER => 'Bank Transfer',
+        self::PAYMENT_METHOD_OTHER         => 'Other',
+    ];
+
     protected $fillable = [
         'invoice_id',
         'customer_id',
         'branch_id',
         'cash_register_id',
+        'payment_method',
         'created_by',
     ];
 
@@ -52,11 +66,11 @@ class Sale extends Model
         $items = [];
         if(\Auth::check())
         {
-            
+
             $user=\Auth::user();
         }
         else{
-            
+
            $user=User::where('id',$this->created_by)->first();
         }
         foreach($this->items as $key => $item)
@@ -246,8 +260,8 @@ class Sale extends Model
 
 
     public static function customers($customer)
-    {   
-        
+    {
+
         $categoryArr  = explode(',', $customer);
         $unitRate = 0;
         foreach($categoryArr as $customer)
@@ -259,7 +273,7 @@ class Sale extends Model
                 $customer        = Customer::find($customer);
                 $unitRate        = (!empty($customer->name) ? $customer->name :'');
             }
-            
+
         }
 
         return $unitRate;
@@ -273,7 +287,7 @@ class Sale extends Model
         {
             $branch          = Branch::find($branch);
             $unitRate        = (!empty($branch->name) ? $branch->name :'');
-            
+
         }
 
         return $unitRate;
@@ -287,7 +301,7 @@ class Sale extends Model
         {
             $cashregister    = CashRegister::find($cashregister);
             $unitRate        = (!empty($cashregister->name) ? $cashregister->name : '');
-            
+
         }
 
         return $unitRate;

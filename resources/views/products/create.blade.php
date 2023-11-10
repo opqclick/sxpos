@@ -8,7 +8,17 @@
             </a>
         </div>
         @endif
-
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="product_type">Product Type</label>
+                    <select name="is_service" class="form-control">
+                        <option value="0">Product</option>
+                        <option value="1">Service</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="form-group col-md-12">
             {{ Form::label('name', __('Product Name'), ['class' => 'col-form-label']) }}
             {{ Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Enter new Product Name'), 'required' => '']) }}
@@ -55,8 +65,8 @@
         </div>
         <div class="col-md-6 my-auto mx-auto">
             <div class="form-group" id="product-image">
-                <img class="profile-image rounded-circle-product" > 
-                
+                <img class="profile-image rounded-circle-product" >
+
                 <button type="button" class="action-btn bg-danger ms-3 product-img-btn d-none">
                     <i class="ti ti-trash text-white btn-xs mb-1"></i>
                 </button>

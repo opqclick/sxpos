@@ -13,6 +13,10 @@ class SelledItems extends Model
         'quantity',
         'tax_id',
         'tax',
+        'is_service',
+        'ref_id',
+        'input_price',
+        'cost_price',
     ];
 
     public function product(){

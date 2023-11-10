@@ -22,6 +22,7 @@ class Product extends Model
         'brand_id',
         'image',
         'product_type',
+        'is_service',
         'created_by',
     ];
 
@@ -142,7 +143,7 @@ class Product extends Model
         {
             $taxe    = Tax::find($taxe);
             $unitRate        = (!empty($taxe->name) ? $taxe->name : '');
-            
+
         }
 
         return $unitRate;
@@ -156,7 +157,7 @@ class Product extends Model
         {
             $unit    = Unit::find($unit);
             $unitRate        = (!empty($unit->name) ? $unit->name : '');
-            
+
         }
 
         return $unitRate;
@@ -170,7 +171,7 @@ class Product extends Model
         {
             $category    = Category::find($category);
             $categoryRate        = (!empty($category->name) ? $category->name :'');
-            
+
         }
 
         return $categoryRate;
@@ -184,7 +185,7 @@ class Product extends Model
         {
             $brand    = Brand::find($brand);
             $brandRate        = (!empty($brand->name) ? $brand->name :'');
-            
+
         }
 
         return $brandRate;

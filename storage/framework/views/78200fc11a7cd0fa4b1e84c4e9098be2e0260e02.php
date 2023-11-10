@@ -726,4 +726,4 @@
 </body>
 
 </html>
-<?php /**PATH /Users/hasnat/_Freelance_/__laravel/POSGo/Modules/LandingPage/Resources/views/layouts/landingpage.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/html/AsynchronousDigital/POSGo/Modules/LandingPage/Resources/views/layouts/landingpage.blade.php ENDPATH**/ ?>

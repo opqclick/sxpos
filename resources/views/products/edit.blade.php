@@ -8,6 +8,17 @@
             </a>
         </div>
         @endif
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="product_type">Product Type</label>
+                    <select name="is_service" class="form-control">
+                        <option value="0" {{ ($product->is_service == 0)? 'selected':'' }}>Product</option>
+                        <option value="1" {{ ($product->is_service == 1)? 'selected':'' }}>Service</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="form-group col-md-12">
             {{ Form::label('name', __('Product Name'), ['class' => 'col-form-label']) }}
             {{ Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Enter new Product Name'), 'required' => '']) }}

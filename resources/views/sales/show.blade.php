@@ -87,16 +87,34 @@
                         </table>
                     </div>
                     @if ($details['pay'] == 'show')
-                        {{-- <a href="" data-url="{{ route('sale.print') }}" data-ajax-popup="truee" data-size="sm" 
+                        {{-- <a href="" data-url="{{ route('sale.print') }}" data-ajax-popup="truee" data-size="sm"
                             data-bs-toggle="tooltip" data-title="{{ __('Invoice Sale') }}"
                             class="btn btn-primary btn-done-payment rounded mb-3 float-right">
                             {{ __('Done Payment') }}
                         </a> --}}
+                        <div class="row mb-2">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <div class="row justify-content-end">
+                                    <div class="col-auto">
+                                        <label for="payment_method">Payment Method</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <select name="payment_method" id="payment_method" class="form-control">
+                                            @foreach(\App\Models\Sale::PAYMENT_METHODS as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                        <button class="btn btn-primary btn-done-payment btn-sm text-right float-right mb-3 " data-url="{{ route('sale.print') }}" data-ajax-popup="truee" data-size="sm" 
+
+                        <button class="btn btn-primary btn-done-payment btn-sm text-right float-right mb-3 " data-url="{{ route('sale.print') }}" data-ajax-popup="truee" data-size="sm"
                         data-bs-toggle="tooltip" data-title="{{ __('Invoice Sale') }}">
                         {{ __('Done Payment') }}
-                    </button>  
+                    </button>
                     @endif
                 </div>
             </div>
@@ -104,4 +122,4 @@
 
     @endif
 
-   
+

@@ -32,4 +32,4 @@
         </div>
     </body>
 </html>
-<?php /**PATH /Users/hasnat/_Freelance_/__laravel/POSGo/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/views/minimal.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/html/AsynchronousDigital/POSGo/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/views/minimal.blade.php ENDPATH**/ ?>

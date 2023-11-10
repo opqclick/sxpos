@@ -5,7 +5,9 @@ $.ajaxSetup({
 });
 
 var session_key = $(location).attr("href").split('/').pop();
-
+if(session_key.slice(-1) == '#') {
+    session_key = session_key.substring(0, session_key.length - 1);
+}
 $(document).ready(function() {
     loadConfirm();
 
@@ -208,7 +210,7 @@ $(document).on('click', 'a[data-ajax-popup="truee"], button[data-ajax-popup="tru
         url: url,
         data: data,
         success: function(data) {
-            
+
             $('#commonModal1 .body').html(data);
 
             $("select option[value='']").prop('disabled', !$("select option[value='']").prop('disabled'));
@@ -251,10 +253,10 @@ $(document).on('click', 'a[data-ajax-popup="truee"], button[data-ajax-popup="tru
                 // CKEDITOR.replace('description');
             }
             $('#commonModal').find(".btn-close").click();
-            
+
 
             $('#commonModal1').modal('toggle');
-            // $('#commonModal').modal({backdrop: 'static', keyboard: false});            
+            // $('#commonModal').modal({backdrop: 'static', keyboard: false});
         },
         error: function(data) {
             data = data.responseJSON;

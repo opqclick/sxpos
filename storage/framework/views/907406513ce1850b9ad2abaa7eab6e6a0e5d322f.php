@@ -159,4 +159,4 @@
                 
             });
         </script>
-<?php /**PATH /Users/hasnat/_Freelance_/__laravel/POSGo/resources/views/layouts/cookie_consent.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/html/AsynchronousDigital/POSGo/resources/views/layouts/cookie_consent.blade.php ENDPATH**/ ?>

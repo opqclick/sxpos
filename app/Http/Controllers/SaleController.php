@@ -27,7 +27,7 @@ class SaleController extends Controller
     {
         if (Auth::user()->can('Manage Sales')) {
             $user_id = Auth::user()->getCreatedBy();
-
+//            dd(session()->get('sales'));
             $branches = Branch::where('created_by', $user_id)->pluck('name', 'id');
             return view('sales.index',compact('branches'));
         } else {
@@ -109,6 +109,7 @@ class SaleController extends Controller
             $customer_id      = Customer::customer_id($request->vc_name);
             $branch_id        = $request->branch_id != '' ? $request->branch_id : 0;
             $cash_register_id = $request->cash_register_id != '' ? $request->cash_register_id : 0;
+            $payment_method = $request->payment_method != '' ? $request->payment_method : 1;
             $invoice_id       = $this->invoiceSellNumber();
             $sales            = session()->get('sales');
 
@@ -128,6 +129,7 @@ class SaleController extends Controller
                     $sale->customer_id      = $customer_id;
                     $sale->branch_id        = $branch_id;
                     $sale->cash_register_id = $cash_register_id;
+                    $sale->payment_method   = $payment_method;
                     $sale->created_by       = $user_id;
 
                     $sale->save();
@@ -155,6 +157,23 @@ class SaleController extends Controller
                         $selleditems->quantity   = $value['quantity'];
                         $selleditems->tax_id     = $tax_id;
                         $selleditems->tax        = $value['tax'];
+                        $selleditems->is_service = $value['is_service'] ?? 0;
+                        if(isset($value['ref_id']) && $value['ref_id'] != '') {
+                            $selleditems->ref_id = $value['ref_id'];
+                        } else {
+                            $selleditems->ref_id = null;
+                        }
+                        if(isset($value['input_price']) && $value['input_price'] != '') {
+                            $selleditems->input_price = $value['input_price'];
+                        } else {
+                            $selleditems->input_price = 0;
+                        }
+                        if(isset($value['cost_price']) && $value['cost_price'] != '') {
+                            $selleditems->cost_price = $value['cost_price'];
+                        } else {
+                            $selleditems->cost_price = 0;
+                        }
+
 
                         $selleditems->save();
 
@@ -178,12 +197,12 @@ class SaleController extends Controller
                             $smtp_error = "<br><span class='text-danger'>" . __('E-Mail has been not sent due to SMTP configuration') . '</span>';
                         }
 
-                        
+
                         $setting  = Utility::settings(\Auth::user()->creatorId());
                         if (isset($setting['twilio_sales_notification']) && $setting['twilio_sales_notification'] == 1) {
                             // $msg = __("New User created by") . ' ' . \Auth::user()->name . '.';
                             // $to = $sale->customer->phone_number;     remove if any error
-                            
+
                             // $sellproduct = SelledItems::where('sell_id', '=', $sale->id)->first();
                             $customer = Customer::where('id', '=', $sale->customer_id)->first();
                             // dd($sellproduct);
@@ -193,7 +212,7 @@ class SaleController extends Controller
                                 'customer_name' => $customer->name,
                                 'customer_email' => $customer->email,
                                 'user_name'  => \Auth::user()->name,
-                                
+
                             ];
                             // dd($uArr);
                             Utility::send_twilio_msg($customer->phone_number,'new_sales',$uArr);    //if any error so remove $to and ADD $user->phone

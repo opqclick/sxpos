@@ -92,6 +92,7 @@ class ProductController extends Controller
                 $product->unit_id = $request->unit_id;
             }
             $product->product_type = 0;
+            $product->is_service = $request->is_service ?? 0;
             $product->slug         = Str::slug($request->name, '-');
             $product->created_by   = Auth::user()->getCreatedBy();
 
@@ -214,6 +215,7 @@ class ProductController extends Controller
             $product->sale_price     = $request->sale_price;
             $product->sku            = $request->sku;
             $product->description    = $request->description;
+            $product->is_service    = $request->is_service ?? 0;
             if (!empty($request->input('category_id'))) {
                 $product->category_id = $request->category_id;
             }
@@ -388,9 +390,9 @@ class ProductController extends Controller
                 $cart = session()->get($lastsegment);
                 if (isset($cart) && count($cart) > 0)
                 {
-                    session()->forget($lastsegment);
+//                    session()->forget($lastsegment);
                 }
-                 
+
             }
             $output   = "";
             if ($request->cat_id !== '' &&  $request->cash_register_id == '0' && $request->search == '') {
@@ -415,17 +417,23 @@ class ProductController extends Controller
                     } else {
                         $productprice = $product->sale_price != 0 ? $product->sale_price : $product->purchase_price;
                     }
+
+                    if($product->is_service == 1) {
+                        $qtyHtml = '';
+                    } else {
+                        $qtyHtml = '<small class="top-badge badge bg-danger mb-0">'. $product->getTotalProductQuantity() .'</small>';
+                    }
                     $output .= '
                             <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-12">
-                            <div class="tab-pane fade show active toacart w-100" data-url="' . url('add-to-cart/' . $product->id . '/' . $lastsegment) .'">
+                            <div class="tab-pane fade show active toacart w-100" data-service-name="'.$product->name.'" data-is-service="'.$product->is_service.'" data-url="' . url('add-to-cart/' . $product->id . '/' . $lastsegment) .'">
                                 <div class="position-relative card">
                                     <img alt="Image placeholder" src="' . asset(Storage::url($image_url)) . '" class="card-image avatar shadow hover-shadow-lg" style=" height: 6rem; width: 100%;">
                                     <div class="p-0 custom-card-body card-body d-flex ">
                                         <div class="card-body my-2 p-2 text-left card-bottom-content">
                                             <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                            <small class="badge bg-primary mb-0 mt-2">' . Auth::user()->priceFormat($productprice) . '</small>
-                                            <small class="top-badge badge bg-danger mb-0">'. $product->getTotalProductQuantity() .'</small>
-                                        </div>
+                                            <small class="badge bg-primary mb-0 mt-2">' . Auth::user()->priceFormat($productprice) . '</small>'.
+                                            $qtyHtml.
+                                        '</div>
                                     </div>
                                 </div>
                             </div>
@@ -455,7 +463,7 @@ class ProductController extends Controller
                 $productquantity = $product->getTotalProductQuantity();
             }
 
-            if (!$product || ($session_key == 'sales' && $productquantity == 0)) {
+            if (!$product || ($session_key == 'sales' && $productquantity == 0 && $product->is_service != 1)) {
                 return response()->json(
                     [
                         'code' => 404,
@@ -471,8 +479,11 @@ class ProductController extends Controller
 
                 $productprice = $product->purchase_price != 0 ? $product->purchase_price : 0;
             } else if ($session_key == 'sales') {
-
-                $productprice = $product->sale_price != 0 ? $product->sale_price : 0;
+                if ($product->is_service == 1) {
+                    $productprice = $request->price;
+                } else {
+                    $productprice = $product->sale_price != 0 ? $product->sale_price : 0;
+                }
             } else {
 
                 $productprice = $product->sale_price != 0 ? $product->sale_price : $product->purchase_price;
@@ -480,16 +491,21 @@ class ProductController extends Controller
 
             $originalquantity = (int) $productquantity;
 
-            $tax = Product::where('products.id', $id)->leftJoin(
-                'taxes',
-                function ($join) {
-                    $join->on('taxes.id', '=', 'products.tax_id')->where('taxes.created_by', '=', Auth::user()->getCreatedBy())->orWhereNull('products.tax_id');
-                }
-            )->select(DB::Raw('IFNULL( `taxes`.`percentage` , 0 ) as percentage'))->first();
+            if($product->is_service == 1){
+                $producttax = 0;
+                $tax = 0;
+            } else {
+                $tax = Product::where('products.id', $id)->leftJoin(
+                    'taxes',
+                    function ($join) {
+                        $join->on('taxes.id', '=', 'products.tax_id')->where('taxes.created_by', '=', Auth::user()->getCreatedBy())->orWhereNull('products.tax_id');
+                    }
+                )->select(DB::Raw('IFNULL( `taxes`.`percentage` , 0 ) as percentage'))->first();
 
-            $producttax = $tax->percentage;
+                $producttax = $tax->percentage;
 
-            $tax = ($productprice * $producttax) / 100;
+                $tax = ($productprice * $producttax) / 100;
+            }
 
             $subtotal = $productprice + $tax;
             $cart     = session()->get($session_key);
@@ -560,10 +576,16 @@ class ProductController extends Controller
                         "tax" => $producttax,
                         "subtotal" => $subtotal,
                         "originalquantity" => $originalquantity,
+                        "is_service" => $product->is_service,
                     ],
                 ];
+                if ($product->is_service == 1) {
+                    $cart[$id]['input_price'] = $request->price;
+                    $cart[$id]['cost_price'] = $request->cost;
+                    $cart[$id]['ref_id'] = $request->ref_id;
+                }
 
-                if ($originalquantity < $cart[$id]['quantity'] && $session_key == 'sales') {
+                if ($originalquantity < $cart[$id]['quantity'] && $session_key == 'sales' && $product->is_service != 1) {
                     return response()->json(
                         [
                             'code' => 404,
@@ -598,7 +620,14 @@ class ProductController extends Controller
                 $cart[$id]["subtotal"]         = $subtotal + $tax;
                 $cart[$id]["originalquantity"] = $originalquantity;
 
-                if ($originalquantity < $cart[$id]['quantity'] && $session_key == 'sales') {
+
+                if ($product->is_service == 1) {
+                    $cart[$id]['input_price'] = $request->price;
+                    $cart[$id]['cost_price'] = $request->cost;
+                    $cart[$id]['ref_id'] = $request->ref_id;
+                }
+
+                if ($originalquantity < $cart[$id]['quantity'] && $session_key == 'sales' && $product->is_service != 1) {
                     return response()->json(
                         [
                             'code' => 404,
@@ -631,9 +660,16 @@ class ProductController extends Controller
                 "subtotal" => $subtotal,
                 "id" => $id,
                 "originalquantity" => $originalquantity,
+                "is_service" => $product->is_service,
             ];
 
-            if ($originalquantity < $cart[$id]['quantity'] && $session_key == 'sales') {
+            if ($product->is_service == 1) {
+                $cart[$id]['input_price'] = $request->price;
+                $cart[$id]['cost_price'] = $request->cost;
+                $cart[$id]['ref_id'] = $request->ref_id;
+            }
+
+            if ($originalquantity < $cart[$id]['quantity'] && $session_key == 'sales' && $product->is_service != 1) {
                 return response()->json(
                     [
                         'code' => 404,
@@ -682,17 +718,16 @@ class ProductController extends Controller
             }
 
             if ($quantity) {
-                
+
                 $cart[$id]["quantity"] = $quantity;
-                $producttax            = (array_key_exists("tax",$cart[$id])) ? $cart[$id]['tax'] : '0';                
+                $producttax            = (array_key_exists("tax",$cart[$id])) ? $cart[$id]['tax'] : '0';
                 $productprice          = (array_key_exists("price",$cart[$id])) ? $cart[$id]['price'] : '0';
                 $subtotal = $productprice * $quantity;
                 $tax      = ($producttax != '0') ? (($subtotal * $producttax) / 100 ): 0;
                 $cart[$id]["subtotal"] = $subtotal + $tax;
-
             }
 
-            if ($cart[$id]["originalquantity"] < $cart[$id]['quantity'] && $session_key == 'sales') {
+            if ($cart[$id]["originalquantity"] < $cart[$id]['quantity'] && $session_key == 'sales' && $cart[$id]['is_service'] != 1) {
                 return response()->json(
                     [
                         'code' => 404,
@@ -755,7 +790,7 @@ class ProductController extends Controller
             return redirect()->back()->with('error', __('Cart cannot be empty!.'));
         }
     }
-    
+
     public function export()
     {
         $name = 'Product_' . date('Y-m-d i:h:s');
