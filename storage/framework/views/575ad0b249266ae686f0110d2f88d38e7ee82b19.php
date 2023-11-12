@@ -412,6 +412,43 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editServiceModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="body">
+                        <div class="container mb-4">
+                            <div class="form-group">
+                                <label>Ref No</label>
+                                <input type="text" name="ref_no" class="edit_service_ref_no form-control" placeholder="Enter Ref No">
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Price</label>
+                                        <input type="number" name="price" class="edit_service_price form-control" placeholder="Enter Price">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Cost</label>
+                                        <input type="number" name="cost" class="edit_service_cost form-control" placeholder="Enter Service Cost">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary" onclick="editServiceCart()">Edit Service</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script src="<?php echo e(asset('custom/js/jquery.min.js')); ?>"></script>
 
@@ -664,6 +701,63 @@
                     }
                 });
             }
+
+            var edit_service_url = '';
+            function editCart(button) {
+                let id=$(button).attr('data-id');
+                let price = $(button).attr('data-price');
+                let cost = $(button).attr('data-cost');
+                let ref_id = $(button).attr('data-ref_id');
+                let name = $(button).attr('data-name');
+                edit_service_url = $(button).attr('data-url');
+
+                $(".edit_service_ref_no").val(ref_id);
+                $(".edit_service_price").val(price);
+                $(".edit_service_cost").val(cost);
+                $("#editServiceModalLabel").html(name);
+                $("#editServiceModal").modal('show');
+            }
+
+            function editServiceCart() {
+                let req_url = edit_service_url;
+                if(req_url.slice(-1) == '#') {
+                    req_url = req_url.substring(0, req_url.length - 1);
+                }
+                let ref_id = $('.edit_service_ref_no').val();
+                let price = $('.edit_service_price').val();
+                let cost = $('.edit_service_cost').val();
+                req_url = req_url+"?ref_id="+ref_id+"&price="+price+"&cost="+cost;
+
+                var sum = 0;
+                $.ajax({
+                    url: req_url,
+
+                    success: function(data) {
+
+                        if (data.code == '200') {
+
+                            $('#displaytotal').text(addCommas(data.product.subtotal));
+
+                            if ('carttotal' in data) {
+                                $.each(data.carttotal, function(key, value) {
+                                    $('#product-id-' + value.id + ' .subtotal').text(
+                                        addCommas(value.subtotal));
+                                    sum += value.subtotal;
+                                });
+                                $('#displaytotal').text(addCommas(sum));
+                            }
+                            $("#"+data.replace_id).html(data.carthtml);
+                            $("#editServiceModal").modal('hide');
+                        }
+                    },
+                    error: function(data) {
+                        data = data.responseJSON;
+                        show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
+                    }
+                });
+            }
+
+
             $(document).ready(function() {
 
                 $("#vc_name_hidden").val($('.customer_select').val());
@@ -695,7 +789,9 @@
                     $("#brand_name_hidden").val($(this).val());
                 });
 
-                /*$('.pos_cash_register_id').change(function() {
+
+                //comment it if you don't need to empty cart when changing cash register //added by oalid
+                $('.pos_cash_register_id').change(function() {
                     $("#brand_name_hidden").val($(this).val());
 
                     var session_key = $("#empty_cart").val();
@@ -714,7 +810,7 @@
 
                         }
                     });
-                });*/
+                });
 
 
                 $(document).on('click', '#clearinput', function(e) {

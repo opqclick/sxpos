@@ -513,7 +513,12 @@ class ProductController extends Controller
             $model_delete_id = 'delete-form-' . $id;
 
             $carthtml = '';
-
+            $editHtml = '';
+            if($product->is_service == 1 && $session_key == 'sales') {
+                $editHtml = '<a href="javascript:void(0)" onclick="editCart(this)" data-id="' . $id . '" data-price="' . $request->price . '" data-cost="' . $request->cost . '" data-ref_id="' . $request->ref_id . '" data-name="'.$product->name.'" data-url="/edit-service-cart/'.$id.'" class="action-btn bg-info">
+                                <span class=""><i class="ti ti-pencil btn btn-sm text-white"></i></span>
+                            </a>';
+            }
             $carthtml .= '<tr data-product-id="' . $id . '" id="product-id-' . $id . '">
                 <td class="col-sm-2">
                     <img alt="Image placeholder" src="' . asset(Storage::url($image_url)) . '" class="card-image avatar shadow hover-shadow-lg">
@@ -548,6 +553,7 @@ class ProductController extends Controller
 
                 <td class="col-sm-2">
                     <div class="col-sm-2 mt-2">
+                        '.$editHtml.'
                         <a href="#" class="action-btn bg-danger bs-pass-para" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $id . '" title="' . __('Delete') . '"   >
                         <span class=""><i class="ti ti-trash btn btn-sm text-white"></i></span>
                         </a>
@@ -700,6 +706,105 @@ class ProductController extends Controller
                     'error' => __('This Product is not found!'),
                 ],
                 404
+            );
+        }
+    }
+
+    public function editServiceCart(Request $request, $id)
+    {
+        if (Auth::user()->can('Manage Product') && $request->ajax()) {
+            $cart = session()->get('sales');
+            if (!isset($cart[$id])) {
+                return response()->json(
+                    [
+                        'code' => 404,
+                        'status' => 'Error',
+                        'error' => __('Invalid Cart!'),
+                    ],
+                    404
+                );
+            }
+
+            $productprice = $request->price;
+            $subtotal = $request->price * $cart[$id]['quantity'];
+            $cart[$id]['price'] = $productprice;
+            $cart[$id]['subtotal'] = $subtotal;
+            $cart[$id]['input_price'] = $request->price;
+            $cart[$id]['cost_price'] = $request->cost;
+            $cart[$id]['ref_id'] = $request->ref_id;
+
+            session()->put('sales', $cart);
+            $product = Product::find($id);
+            $image_url = (!empty($product->image) && Storage::exists($product->image)) ? $product->image : 'logo/placeholder.png';
+            $productname      = $product->name;
+            $producttax = 0;
+            $tax = 0;
+            $session_key = 'sales';
+            $model_delete_id = 'delete-form-' . $id;
+
+            $carthtml = '';
+            $editHtml = '<a href="javascript:void(0)" onclick="editCart(this)" data-id="' . $id . '" data-price="' . $request->price . '" data-cost="' . $request->cost . '" data-ref_id="' . $request->ref_id . '" data-name="'.$product->name.'" data-url="/edit-service-cart/'.$id.'" class="action-btn bg-info">
+                            <span class=""><i class="ti ti-pencil btn btn-sm text-white"></i></span>
+                        </a>';
+            $carthtml .= '
+                <td class="col-sm-2">
+                    <img alt="Image placeholder" src="' . asset(Storage::url($image_url)) . '" class="card-image avatar shadow hover-shadow-lg">
+                </td>
+
+                <td class="col-sm-2">
+                    <span class="name">' . $productname . '</span>
+                </td>
+
+
+
+                <td class="col-sm-2">
+                    <span class="quantity buttons_added">
+                        <input type="button" value="-" class="minus">
+                        <input type="number" step="1" min="1" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '">
+                        <input type="button" value="+" class="plus">
+                    </span>
+                </td>
+    `
+
+                <td class="col-sm-2">
+                    <span class="tax">' . $producttax . '%</span>
+                </td>
+
+                <td class="col-sm-2">
+                    <span class="price">' . Auth::user()->priceFormat($productprice) . '</span>
+                </td>
+
+                <td class="col-sm-2">
+                    <span class="subtotal">' . Auth::user()->priceFormat($subtotal) . '</span>
+                </td>
+
+                <td class="col-sm-2">
+                    <div class="col-sm-2 mt-2">
+                        '.$editHtml.'
+                        <a href="#" class="action-btn bg-danger bs-pass-para" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $id . '" title="' . __('Delete') . '"   >
+                        <span class=""><i class="ti ti-trash btn btn-sm text-white"></i></span>
+                        </a>
+                        <form method="post" action="' . url('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
+                            <input name="_method" type="hidden" value="DELETE">
+                            <input name="_token" type="hidden" value="' . csrf_token() . '">
+                            <input type="hidden" name="session_key" value="' . $session_key . '">
+                            <input type="hidden" name="id" value="' . $id . '">
+                        </form>
+
+
+                    </div>
+                </td>
+            ';
+            $replace_id = 'product-id-' . $id;
+            return response()->json(
+                [
+                    'code' => 200,
+                    'success' => __('Cart updated successfully!'),
+                    'product' => $cart,
+                    'carthtml' => $carthtml,
+                    'replace_id' => $replace_id,
+                    'carttotal' => $cart,
+                ]
             );
         }
     }

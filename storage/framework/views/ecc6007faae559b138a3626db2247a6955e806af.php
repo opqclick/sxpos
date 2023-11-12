@@ -250,7 +250,7 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                 </li>
             <?php endif; ?>
 
-            
+
             <?php if(\Auth::user()->type == 'Owner'): ?>
             <li class="dash-item <?php echo e(\Request::route()->getName() == 'notification_templates' || Request::segment(1) == 'notification_templates' ? 'active' : ''); ?>">
                 <a class="dash-link" href=<?php echo e(url('notification-templates')); ?>>
@@ -293,6 +293,7 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                     Request::segment(1) == 'purchased-daily-analysis' ||
                     Request::segment(1) == 'purchased-monthly-analysis' ||
                     Request::segment(1) == 'sold-daily-analysis' ||
+                    Request::segment(1) == 'custom-report' ||
                     Request::segment(1) == 'sold-monthly-analysis'
                         ? 'active dash-trigger'
                         : ''); ?>">
@@ -368,6 +369,14 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                                     href="<?php echo e(route('sold.daily.analysis')); ?>"><?php echo e(__('Sale Daily/Monthly Report')); ?></a>
                             </li>
                         <?php endif; ?>
+
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('Manage Sales')): ?>
+                            <li
+                                class="dash-item dash-hasmenu <?php echo e(Request::segment(1) == 'custom-report' || Request::segment(1) == 'custom-report' ? 'active' : ''); ?>">
+                                <a class="dash-link "
+                                    href="<?php echo e(route('custom.report')); ?>"><?php echo e(__('Custom Report')); ?></a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </li>
             <?php endif; ?>
@@ -417,7 +426,7 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                 </li>
 
             <?php endif; ?>
-            
+
 
         </ul>
     </div>

@@ -39,7 +39,7 @@ Route::get('/change/mode', ['as' => 'change.mode', 'uses' => 'HomeController@cha
 
 // Webhook
 Route::resource('webhook', WebhookController::class);
-    
+
 
 Route::resource('roles', RoleController::class)->middleware(['auth','XSS']);
 
@@ -86,6 +86,7 @@ Route::resource('taxes', TaxController::class)->middleware(['auth','XSS']);
 Route::resource('units', UnitController::class)->middleware(['auth','XSS']);
 
 Route::get('add-to-cart/{id}/{session}', [ProductController::class,'addToCart'])->middleware(['XSS']);
+Route::get('edit-service-cart/{id}', [ProductController::class,'editServiceCart'])->middleware(['XSS']);
 Route::patch('update-cart', [ProductController::class,'updateCart'])->middleware(['XSS']);
 Route::delete('remove-from-cart', [ProductController::class,'removeFromCart'])->middleware(['XSS']);
 Route::post('empty-cart', [ProductController::class,'emptyCart'])->middleware(['XSS']);
@@ -218,6 +219,10 @@ Route::get('sold-monthly-analysis', [ReportController::class,'soldMonthlyAnalysi
 Route::get('filter-sold-daily-chart', [ReportController::class,'soldDailyChartFilter'])->name('sold.daily.chart.filter')->middleware(['auth','XSS']);
 Route::get('filter-sold-monthly-chart', [ReportController::class,'soldMonthlyChartFilter'])->name('sold.monthly.chart.filter')->middleware(['auth','XSS']);
 
+Route::get('custom-report', [CustomReportController::class,'index'])->name('custom.report')->middleware(['auth','XSS']);
+Route::get('custom-report/cash-register-sale-report', [CustomReportController::class,'showCashRegisterSaleReport'])->name('custom.report.cash-register-sale-report')->middleware(['auth','XSS']);
+Route::get('custom-report/service-wise-report', [CustomReportController::class,'showServiceWiseReport'])->name('custom.report.service-wise-report')->middleware(['auth','XSS']);
+
 
 
 
@@ -244,7 +249,7 @@ Route::post('setting/google-calender',[SystemController::class,'saveGoogleCalend
 // meta tags
 Route::post('setting/meta-tags-setting', [SystemController::class, 'saveSeoSettings'])->name('meta.tags.setting')->middleware(['auth', 'XSS']);
 
-// Cookie 
+// Cookie
 Route::post('cookie-setting', [SystemController::class, 'saveCookieSettings'])->name('cookie.setting')->middleware(['auth', 'XSS']);
 Route::any('/cookie-consent', [SystemController::class,'CookieConsent'])->name('cookie-consent')->middleware(['auth', 'XSS']);
 
@@ -361,7 +366,7 @@ Route::get('generate/{template_name}',[AiTemplateController::class,'create'])->n
 Route::post('generate/keywords/{id}',[AiTemplateController::class,'getKeywords'])->name('generate.keywords');
 Route::post('generate/response',[AiTemplateController::class,'AiGenerate'])->name('generate.response');
 
-    
+
 
 //================================= Custom Landing Page ====================================//
 

@@ -250,7 +250,7 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                 </li>
             @endcan
 
-            
+
             @if(\Auth::user()->type == 'Owner')
             <li class="dash-item {{ \Request::route()->getName() == 'notification_templates' || Request::segment(1) == 'notification_templates' ? 'active' : ''}}">
                 <a class="dash-link" href={{url('notification-templates')}}>
@@ -302,6 +302,7 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                     Request::segment(1) == 'purchased-daily-analysis' ||
                     Request::segment(1) == 'purchased-monthly-analysis' ||
                     Request::segment(1) == 'sold-daily-analysis' ||
+                    Request::segment(1) == 'custom-report' ||
                     Request::segment(1) == 'sold-monthly-analysis'
                         ? 'active dash-trigger'
                         : '' }}">
@@ -377,6 +378,14 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                                     href="{{ route('sold.daily.analysis') }}">{{ __('Sale Daily/Monthly Report') }}</a>
                             </li>
                         @endcan
+
+                        @can('Manage Sales')
+                            <li
+                                class="dash-item dash-hasmenu {{ Request::segment(1) == 'custom-report' || Request::segment(1) == 'custom-report' ? 'active' : '' }}">
+                                <a class="dash-link "
+                                    href="{{ route('custom.report') }}">{{ __('Custom Report') }}</a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
             @endif
@@ -426,7 +435,7 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
                 </li>
 
             @endif
-            
+
 
         </ul>
     </div>

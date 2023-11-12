@@ -10,16 +10,18 @@ use Illuminate\Support\Facades\Auth;
 class Sale extends Model
 {
     const PAYMENT_METHOD_CASH = 1;
-    const PAYMENT_METHOD_CARD = 2;
-    const PAYMENT_METHOD_CHEQUE = 3;
-    const PAYMENT_METHOD_BANK_TRANSFER = 4;
-    const PAYMENT_METHOD_OTHER = 5;
+    const PAYMENT_METHOD_CHEQUE = 2;
+    const PAYMENT_METHOD_CREDIT = 3;
+    const PAYMENT_METHOD_DEBIT = 4;
+    const PAYMENT_METHOD_ZELLE = 5;
+    const PAYMENT_METHOD_OTHER = 6;
     const PAYMENT_METHODS = [
-        self::PAYMENT_METHOD_CASH          => 'Cash',
-        self::PAYMENT_METHOD_CARD          => 'Card',
-        self::PAYMENT_METHOD_CHEQUE        => 'Cheque',
-        self::PAYMENT_METHOD_BANK_TRANSFER => 'Bank Transfer',
-        self::PAYMENT_METHOD_OTHER         => 'Other',
+        self::PAYMENT_METHOD_CASH => 'Cash',
+        self::PAYMENT_METHOD_CHEQUE => 'Cheque',
+        self::PAYMENT_METHOD_CREDIT => 'Credit',
+        self::PAYMENT_METHOD_DEBIT => 'Debit',
+        self::PAYMENT_METHOD_ZELLE => 'Zelle',
+        self::PAYMENT_METHOD_OTHER => 'Other',
     ];
 
     protected $fillable = [
