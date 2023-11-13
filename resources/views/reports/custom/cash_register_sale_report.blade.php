@@ -28,8 +28,8 @@
 @section('content')
 
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="card" style="min-height: 225px;">
+        <div class="col-lg-2 col-4">
+            <div class="card" style="min-height: 180px;">
                 <div class="card-body">
                     <div class="theme-avtar bg-primary">
                         <i class="ti ti-hand-finger"></i>
@@ -42,8 +42,8 @@
         </div>
         @foreach($pm_amounts as $key => $pm_amount)
             @if($pm_amount <= 0) @continue @endif
-            <div class="col-lg-3 col-6">
-                <div class="card" style="min-height: 225px;">
+            <div class="col-lg-2 col-4">
+                <div class="card" style="min-height: 180px;">
                     <div class="card-body">
                         <div class="theme-avtar bg-warning">
                             <i class="ti ti-report-money"></i>

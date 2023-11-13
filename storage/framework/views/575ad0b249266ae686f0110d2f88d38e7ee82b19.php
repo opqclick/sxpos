@@ -660,6 +660,18 @@
                 let ref_id = $('.add_service_ref_no').val();
                 let price = $('.add_service_price').val();
                 let cost = $('.add_service_cost').val();
+                if(!ref_id) {
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Ref No is required', 'error');
+                    return false;
+                }
+                if(!price) {
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Price is required', 'error');
+                    return false;
+                }
+                if(!cost) {
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Cost is required', 'error');
+                    return false;
+                }
                 req_url = req_url+"?ref_id="+ref_id+"&price="+price+"&cost="+cost;
                 console.log(req_url);
                 var sum = 0;
@@ -726,6 +738,18 @@
                 let ref_id = $('.edit_service_ref_no').val();
                 let price = $('.edit_service_price').val();
                 let cost = $('.edit_service_cost').val();
+                if(!ref_id) {
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Ref No is required', 'error');
+                    return false;
+                }
+                if(!price) {
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Price is required', 'error');
+                    return false;
+                }
+                if(!cost) {
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Cost is required', 'error');
+                    return false;
+                }
                 req_url = req_url+"?ref_id="+ref_id+"&price="+price+"&cost="+cost;
 
                 var sum = 0;
