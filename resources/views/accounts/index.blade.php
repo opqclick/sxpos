@@ -4,7 +4,7 @@
 
 @section('title')
     <div class="d-inline-block">
-        <h5 class="h4 d-inline-block font-weight-400 mb-0">{{ __('Account List') }}</h5>
+        <h5 class="h4 d-inline-block font-weight-400 mb-0">{{ __('Account List X') }}</h5>
     </div>
 @endsection
 
