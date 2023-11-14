@@ -393,6 +393,18 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
 
             @if(\Auth::user()->type=='Owner')
                 @include('landingpage::menu.landingpage')
+                <li class="dash-item dash-hasmenu">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i
+                                class="ti ti-briefcase"></i></span><span
+                            class="dash-mtext">{{ __('Account') }}</span><span class="dash-arrow"><i
+                                data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item dash-hasmenu">
+                            <a class="dash-link"
+                               href="{{ route('accounts.index') }}">{{ __('Accounts') }}</a>
+                        </li>
+                    </ul>
+                </li>
             @endif
 
 

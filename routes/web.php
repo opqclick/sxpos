@@ -63,6 +63,7 @@ Route::get('user/{id}/plan/{pid}', [UserController::class,'activePlan'])->name('
 
 
 Route::resource('users', UserController::class)->middleware(['auth', 'XSS']);
+Route::resource('accounts', AccountsController::class)->middleware(['auth', 'XSS']);
 
 Route::get('search-customers/{search?}', [CustomerController::class,'searchCustomers'])->name('search.customers')->middleware(['auth', 'XSS']);
 Route::get('get-customer-email/{search?}', [CustomerController::class,'getCustomerEmail'])->name('get.customer.email')->middleware(['auth', 'XSS']);

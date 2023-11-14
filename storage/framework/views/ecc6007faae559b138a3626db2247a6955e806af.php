@@ -384,6 +384,18 @@ $cust_theme_bg = App\Models\Utility::getValByName('cust_theme_bg');
 
             <?php if(\Auth::user()->type=='Owner'): ?>
                 <?php echo $__env->make('landingpage::menu.landingpage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                <li class="dash-item dash-hasmenu">
+                    <a href="#!" class="dash-link"><span class="dash-micon"><i
+                                class="ti ti-briefcase"></i></span><span
+                            class="dash-mtext"><?php echo e(__('Account')); ?></span><span class="dash-arrow"><i
+                                data-feather="chevron-right"></i></span></a>
+                    <ul class="dash-submenu">
+                        <li class="dash-item dash-hasmenu">
+                            <a class="dash-link"
+                               href="<?php echo e(route('accounts.index')); ?>"><?php echo e(__('Accounts')); ?></a>
+                        </li>
+                    </ul>
+                </li>
             <?php endif; ?>
 
 
