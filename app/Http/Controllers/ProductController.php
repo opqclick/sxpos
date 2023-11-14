@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +52,9 @@ class ProductController extends Controller
             $taxes = Tax::where('created_by', $user_id)->pluck('name', 'id');
             $taxes->prepend(__('Apply Tax'), '');
 
-            return view('products.create', compact('categories', 'brands', 'units', 'taxes'));
+            $accounts = Account::where('created_by', $user_id)->get();
+
+            return view('products.create', compact('categories', 'brands', 'units', 'taxes','accounts'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -93,6 +96,8 @@ class ProductController extends Controller
             }
             $product->product_type = 0;
             $product->is_service = $request->is_service ?? 0;
+            $product->account_for_sale = $request->account_for_sale ?? null;
+            $product->account_for_purchase = $request->account_for_purchase ?? null;
             $product->slug         = Str::slug($request->name, '-');
             $product->created_by   = Auth::user()->getCreatedBy();
 
@@ -187,7 +192,9 @@ class ProductController extends Controller
             $taxes = Tax::where('created_by', $user_id)->pluck('name', 'id');
             $taxes->prepend(__('Apply Tax'), '');
 
-            return view('products.edit', compact('product', 'categories', 'brands', 'units', 'taxes'));
+            $accounts = Account::where('created_by', $user_id)->get();
+
+            return view('products.edit', compact('product', 'categories', 'brands', 'units', 'taxes', 'accounts'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -216,6 +223,8 @@ class ProductController extends Controller
             $product->sku            = $request->sku;
             $product->description    = $request->description;
             $product->is_service    = $request->is_service ?? 0;
+            $product->account_for_sale = $request->account_for_sale ?? null;
+            $product->account_for_purchase = $request->account_for_purchase ?? null;
             if (!empty($request->input('category_id'))) {
                 $product->category_id = $request->category_id;
             }

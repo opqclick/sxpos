@@ -23,6 +23,8 @@ class Product extends Model
         'image',
         'product_type',
         'is_service',
+        'account_for_sale',
+        'account_for_purchase',
         'created_by',
     ];
 

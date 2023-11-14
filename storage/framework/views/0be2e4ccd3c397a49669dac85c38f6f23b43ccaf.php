@@ -4,7 +4,7 @@
     <div class="row">
         <div class="form-group col-md-12">
             <label for="type" class="col-form-label">Type</label>
-            <select name="type" id="type" class="form-control">
+            <select name="type" id="type" class="form-control" required>
                 <option value="">Select Type</option>
                 <?php $__currentLoopData = \App\Models\Account::TYPES; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <option value="<?php echo e($key); ?>" <?php echo e(($account->type == $key) ? 'selected':''); ?>><?php echo e($value); ?></option>
@@ -14,14 +14,14 @@
         <div class="form-group col-md-12">
             <?php echo e(Form::label('name', __('Name'), ['class' => 'col-form-label'])); ?>
 
-            <?php echo e(Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Enter Account Name')])); ?>
+            <?php echo e(Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Enter Account Name'), 'required'])); ?>
 
         </div>
 
         <div class="form-group col-md-12">
             <?php echo e(Form::label('ref', __('Ref'), ['class' => 'col-form-label'])); ?>
 
-            <?php echo e(Form::text('ref', null, ['class' => 'form-control', 'placeholder' => __('Enter Account Reference')])); ?>
+            <?php echo e(Form::text('ref', null, ['class' => 'form-control', 'placeholder' => __('Enter Account Reference'), 'required'])); ?>
 
         </div>
     </div>

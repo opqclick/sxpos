@@ -51,7 +51,28 @@
                 {{ Form::select('unit_id', $units, null, ['class' => 'form-control', 'data-toggle' => 'select']) }}
             </div>
         </div>
-
+        <div class="form-group col-md-6">
+            {{ Form::label('account_for_sale', __('Account For Sale'), ['class' => 'col-form-label']) }}
+            <div class="input-group">
+                <select name="account_for_sale" id="account_for_sale" class="form-control" data-toggle="select">
+                    <option value="">Select Account</option>
+                    @foreach($accounts as $account)
+                        <option value="{{ $account->id }}" {{ ($product->account_for_sale == $account->id)?'selected':'' }}>{{ $account->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            {{ Form::label('account_for_purchase', __('Account For Purchase'), ['class' => 'col-form-label']) }}
+            <div class="input-group">
+                <select name="account_for_purchase" id="account_for_purchase" class="form-control" data-toggle="select">
+                    <option value="">Select Account</option>
+                    @foreach($accounts as $account)
+                        <option value="{{ $account->id }}" {{ ($product->account_for_purchase == $account->id)?'selected':'' }}>{{ $account->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
         <div class="mb-4 col-md-6">
             <div class="choose-files mt-3">
                 <label for="image">

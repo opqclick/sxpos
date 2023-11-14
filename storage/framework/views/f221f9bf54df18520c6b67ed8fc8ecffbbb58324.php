@@ -65,6 +65,30 @@
 
             </div>
         </div>
+        <div class="form-group col-md-6">
+            <?php echo e(Form::label('account_for_sale', __('Account For Sale'), ['class' => 'col-form-label'])); ?>
+
+            <div class="input-group">
+                <select name="account_for_sale" id="account_for_sale" class="form-control" data-toggle="select">
+                    <option value="">Select Account</option>
+                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <?php echo e(Form::label('account_for_purchase', __('Account For Purchase'), ['class' => 'col-form-label'])); ?>
+
+            <div class="input-group">
+                <select name="account_for_purchase" id="account_for_purchase" class="form-control" data-toggle="select">
+                    <option value="">Select Account</option>
+                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
+        </div>
 
         <div class="mb-4 col-md-6">
             <div class="choose-files mt-3">
