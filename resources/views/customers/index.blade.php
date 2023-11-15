@@ -10,7 +10,7 @@
 
 @section('action-btn')
 
-       
+
 
         <a href="{{ route('customer.export') }}" class="btn btn-sm btn-primary btn-icon m-1" data-bs-toggle="tooltip"
             title="{{ __('Export') }}">
@@ -30,7 +30,7 @@
                 <span class=""><i class="ti ti-plus text-white"></i></span>
             </a>
         @endcan
-    
+
 
 @endsection
 
@@ -45,7 +45,7 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header card-body table-border-style">
-                       
+
                         <div class="table-responsive">
                             <table class="table dataTable" id="pc-dt-simple">
                                 <thead>
@@ -68,17 +68,15 @@
                                                 @if ($customer->is_active == 1)
                                                     @can('Edit Customer')
                                                         <div class="action-btn bg-info ms-2">
-                                                            <a href="#" class="mx-3 btn btn-sm d-inline-flex align-items-center"
-                                                                data-ajax-popup="true" title="{{ __('Edit Customer') }}"
-                                                                data-title="{{ __('Edit Customer') }}" data-size="lg"
-                                                                data-url="{{ route('customers.edit', $customer->id) }}"
-                                                                data-bs-toggle="tooltip" title="{{ __('Edit Customer') }}">
+                                                            <a href="{{ route('customers.edit', $customer->id) }}" class="mx-3 btn btn-sm d-inline-flex align-items-center"
+                                                                title="{{ __('Edit Customer') }}"
+                                                                data-title="{{ __('Edit Customer') }}"
+                                                                data-bs-toggle="tooltip">
                                                                 <i class="ti ti-pencil text-white"></i>
-
                                                             </a>
                                                         </div>
                                                     @endcan
-                                                  
+
                                                     @can('Delete Customer')
                                                         <div class="action-btn bg-danger ms-2">
                                                             <a href="#"

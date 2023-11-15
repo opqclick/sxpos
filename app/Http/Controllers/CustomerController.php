@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\CustomerCreate;
+use App\Models\CustomerDocument;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -82,7 +83,7 @@ class CustomerController extends Controller
                 $customer = Customer::create($customer);
 
                 try {
-                    $customer->type = 'Customer'; 
+                    $customer->type = 'Customer';
 
                     $uArr = [
                         'app_name'  =>env('APP_NAME'),
@@ -94,13 +95,13 @@ class CustomerController extends Controller
                         'customer_country'=> $request->country,
                         'customer_zipcode'=> $request->zipcode,
                       ];
-                  
+
                     //   Mail::to($customer->email)->send(new CustomerCreate($customer));
                       $resp = Utility::sendEmailTemplate('new_customer', [$customer->id => $customer->email], $uArr);
                 //    dd($resp);
 
-                } catch (\Exception $e) { 
-                   
+                } catch (\Exception $e) {
+
                     $smtp_error = "<br><span class='text-danger'>" . __('E-Mail has been not sent due to SMTP configuration') . '</span>';
                 }
 
@@ -112,7 +113,7 @@ class CustomerController extends Controller
                         'customer_email' =>$request->email,
                         'customer_phone_number' =>$request->phone_number,
                         'user_name'  => \Auth::user()->name,
-                        
+
                     ];
                     // dd($request->phone_number,'new_customer',$uArr);
                     Utility::send_twilio_msg($request->phone_number,'new_customer',$uArr);
@@ -149,7 +150,8 @@ class CustomerController extends Controller
     public function edit(Customer $customer)
     {
         if (Auth::user()->can('Edit Customer')) {
-            return view('customers.edit', compact('customer'));
+            $documents = CustomerDocument::where('customer_id', $customer->id)->get();
+            return view('customers.edit', compact('customer', 'documents'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -181,7 +183,151 @@ class CustomerController extends Controller
             $customer['zipcode']      = $request->zipcode;
             $customer->save();
 
-            return redirect()->route('customers.index')->with('success', __('Customer updated successfully.'));
+            return redirect()->back()->with('success', __('Customer updated successfully.'));
+//            return redirect()->route('customers.index')->with('success', __('Customer updated successfully.'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function createDocument($id)
+    {
+        if (Auth::user()->can('Edit Customer')) {
+            $customer = Customer::find($id);
+            $types = CustomerDocument::TYPES;
+            return view('customers.create_document', compact('customer', 'types'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function storeDocument(Request $request, $id)
+    {
+        if (Auth::user()->can('Edit Customer')) {
+            $customer = Customer::find($id);
+
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'description' => 'required',
+                    'type' => 'required',
+                    'file' => 'required',
+                    'expiration_date' => 'required',
+                ]
+            );
+
+            if ($validator->fails()) {
+                return redirect()->back()->with('error', $validator->errors()->first());
+            }
+
+            $document = new CustomerDocument();
+            $document->customer_id = $customer->id;
+            $document->description = $request->description;
+            $document->type = $request->type;
+            $document->expiration_date = $request->expiration_date;
+            $document->created_by = Auth::user()->getCreatedBy();
+
+            if ($request->hasFile('file')) {
+                $filenameWithExt = $request->file('file')->getClientOriginalName();
+                $filename        = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension       = $request->file('file')->getClientOriginalExtension();
+                $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+
+                $dir        = 'customer-document/';
+                $path = Utility::upload_file($request, 'file', $fileNameToStore, $dir, []);
+
+                if ($path['flag'] == 1) {
+                    $url = $path['url'];
+                    $document->file = $url;
+                } else {
+                    return redirect()->back()->with('error', __($path['msg']));
+                }
+            }
+            $document->save();
+            return redirect()->back()->with(['success' => 'Document successfully uploaded']);
+
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function editDocument($id, $did)
+    {
+        if (Auth::user()->can('Edit Customer')) {
+            $customer = Customer::find($id);
+            $types = CustomerDocument::TYPES;
+            $document = CustomerDocument::find($did);
+            return view('customers.edit_document', compact('customer', 'types', 'document'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function updateDocument(Request $request, $id, $did)
+    {
+        if (Auth::user()->can('Edit Customer')) {
+            $customer = Customer::find($id);
+
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'description' => 'required',
+                    'type' => 'required',
+                    'expiration_date' => 'required',
+                ]
+            );
+
+            if ($validator->fails()) {
+                return redirect()->back()->with('error', $validator->errors()->first());
+            }
+
+            $document = CustomerDocument::where('customer_id', $customer->id)->where('id', $did)->first();
+            if(empty($document)) {
+                return redirect()->back()->with('error', __('Document not found'));
+            }
+
+            $document->description = $request->description;
+            $document->type = $request->type;
+            $document->expiration_date = $request->expiration_date;
+            $document->created_by = Auth::user()->getCreatedBy();
+
+            if ($request->hasFile('file')) {
+                $filenameWithExt = $request->file('file')->getClientOriginalName();
+                $filename        = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension       = $request->file('file')->getClientOriginalExtension();
+                $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+
+                $dir        = 'customer-document/';
+                $path = Utility::upload_file($request, 'file', $fileNameToStore, $dir, []);
+
+                if ($path['flag'] == 1) {
+                    $url = $path['url'];
+                    $document->file = $url;
+                } else {
+                    return redirect()->back()->with('error', __($path['msg']));
+                }
+            }
+            $document->save();
+            return redirect()->back()->with(['success' => 'Document successfully updated']);
+
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function deleteDocument($id, $did)
+    {
+        if (Auth::user()->can('Edit Customer')) {
+            $customer = Customer::find($id);
+            $document = CustomerDocument::where('customer_id', $customer->id)->where('id', $did)->first();
+            if(empty($document)) {
+                return redirect()->back()->with('error', __('Document not found'));
+            }
+
+            $document->delete();
+
+            return redirect()->back()->with('success', __('Document successfully deleted'));
+
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
