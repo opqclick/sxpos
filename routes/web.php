@@ -71,6 +71,13 @@ Route::get('get-customer-email/{search?}', [CustomerController::class,'getCustom
 
 Route::resource('customers', CustomerController::class)->middleware(['auth','XSS']);
 
+Route::get('customers/{id}/create-document', [CustomerController::class,'createDocument'])->name('customers.create.document')->middleware(['auth', 'XSS']);
+Route::post('customers/{id}/create-document', [CustomerController::class,'storeDocument'])->name('customers.create.document')->middleware(['auth', 'XSS']);
+
+Route::get('customers/{id}/edit-document/{did}', [CustomerController::class,'editDocument'])->name('customers.document.edit')->middleware(['auth', 'XSS']);
+Route::post('customers/{id}/edit-document/{did}', [CustomerController::class,'updateDocument'])->name('customers.document.edit')->middleware(['auth', 'XSS']);
+Route::delete('customers/{id}/delete-document/{did}', [CustomerController::class,'deleteDocument'])->name('customers.document.delete')->middleware(['auth', 'XSS']);
+
 Route::get('search-vendors/{search?}', [VendorController::class,'searchVendors'])->name('search.vendors')->middleware(['auth', 'XSS']);
 
 // Route::get('search-vendors/{search?}', 'VendorController@searchVendors')->name('search.vendors')->middleware(['auth', 'XSS']);
