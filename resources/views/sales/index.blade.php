@@ -219,6 +219,7 @@
                                     </a>
                                     {{ Form::hidden('vc_name_hidden', '', ['id' => 'vc_name_hidden']) }}
                                 </div>
+                                <p><strong>Customer :</strong> <span id="showCustomerName"></span></p>
                                 <span id="error_customer_name" style="color: red"></span>
                             </div>
                         </div>
@@ -808,6 +809,7 @@
             $(document).ready(function() {
 
                 $("#vc_name_hidden").val($('.customer_select').val());
+                $("#showCustomerName").html($('.customer_select').val()); //customer
                 $("#brand_name_hidden").val($('#branch_id').val());      //branches
 
                 $(function() {
@@ -830,6 +832,8 @@
 
                 $('.customer_select').change(function() {
                     $("#vc_name_hidden").val($(this).val());
+                    $("#showCustomerName").html($(this).val());
+
                 });
 
                 $('.pos_branch_id').change(function() {
@@ -1127,6 +1131,13 @@
                         }, 1000);
                     },
             );
+            $('#commonModal1').on('hidden.bs.modal', function () {
+                var ele = $(this);
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
+
+            })
 
 
             $.ajax({
@@ -1254,6 +1265,7 @@
                         var term = this.value;
                         if (term.length == 0) {
                             $("#vc_name_hidden").val('');
+                            $("#showCustomerName").html('');
                         }
                         if (term.length < 2) {
                             return false;
@@ -1261,10 +1273,12 @@
                     },
                     focus: function(event, ui) {
                         $("#searchcustomers, #vc_name_hidden").val(ui.item.label);
+                        $("#showCustomerName").html(ui.item.label);
                         return false;
                     },
                     select: function(event, ui) {
                         $("#searchcustomers, #vc_name_hidden").val(ui.item.label);
+                        $("#showCustomerName").html(ui.item.label);
                         return false;
                     }
                 })
