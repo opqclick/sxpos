@@ -1,4 +1,4 @@
-@php
+<?php
     //  $logo=\App\Models\Utility::get_file('uploads/logo/');
     $company_favicon = App\Models\Utility::getValByName('company_favicon');
     $SITE_RTL = App\Models\Utility::getValByName('SITE_RTL');
@@ -22,107 +22,100 @@
         $company_logo = Utility::get_company_logo();
     }
     $seo_settings = \App\Models\Utility::getSeoSetting();
-@endphp
+?>
 
-@section('page-title', __('Add Sales'))
+<?php $__env->startSection('page-title', __('Add Sales')); ?>
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $SITE_RTL == 'on' ? 'rtl' : '' }}">
-{{-- {{ dd($setting) }} --}}
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" dir="<?php echo e($SITE_RTL == 'on' ? 'rtl' : ''); ?>">
+
 
 <head>
     <title>
-        {{ \App\Models\Utility::settings()['company_name'] != '' ? \App\Models\Utility::settings()['company_name'] : config('app.name', 'POSGo Saas') }}
-        @if (trim($__env->yieldContent('page-title')))
-         - @yield('page-title')
-        @endif
+        <?php echo e(\App\Models\Utility::settings()['company_name'] != '' ? \App\Models\Utility::settings()['company_name'] : config('app.name', 'POSGo Saas')); ?>
+
+        <?php if(trim($__env->yieldContent('page-title'))): ?>
+         - <?php echo $__env->yieldContent('page-title'); ?>
+        <?php endif; ?>
     </title>
                                 <!-- Primary Meta Tags -->
 
-        <meta name="title" content="{{$seo_settings['meta_keywords']}}">
-        <meta name="description" content="{{$seo_settings['meta_description']}}">
+        <meta name="title" content="<?php echo e($seo_settings['meta_keywords']); ?>">
+        <meta name="description" content="<?php echo e($seo_settings['meta_description']); ?>">
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
-        <meta property="og:url" content="{{env('APP_URL')}}">
-        <meta property="og:title" content="{{$seo_settings['meta_keywords']}}">
-        <meta property="og:description" content="{{$seo_settings['meta_description']}}">
-        <meta property="og:image" content="{{$logo.$seo_settings['meta_image']}}">
+        <meta property="og:url" content="<?php echo e(env('APP_URL')); ?>">
+        <meta property="og:title" content="<?php echo e($seo_settings['meta_keywords']); ?>">
+        <meta property="og:description" content="<?php echo e($seo_settings['meta_description']); ?>">
+        <meta property="og:image" content="<?php echo e($logo.$seo_settings['meta_image']); ?>">
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="{{env('APP_URL')}}">
-        <meta property="twitter:title" content="{{$seo_settings['meta_keywords']}}">
-        <meta property="twitter:description" content="{{$seo_settings['meta_description']}}">
-        <meta property="twitter:image" content="{{$logo.$seo_settings['meta_image']}}">
-    {{--  --}}
+        <meta property="twitter:url" content="<?php echo e(env('APP_URL')); ?>">
+        <meta property="twitter:title" content="<?php echo e($seo_settings['meta_keywords']); ?>">
+        <meta property="twitter:description" content="<?php echo e($seo_settings['meta_description']); ?>">
+        <meta property="twitter:image" content="<?php echo e($logo.$seo_settings['meta_image']); ?>">
+    
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <link rel="icon"
-        href="{{ $logo . (isset($company_favicon) && !empty($company_favicon) ? $company_favicon : 'favicon.png') }}"
+        href="<?php echo e($logo . (isset($company_favicon) && !empty($company_favicon) ? $company_favicon : 'favicon.png')); ?>"
         type="image/png">
 
     <!-- Favicon icon -->
 
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins/main.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/plugins/main.css')); ?>">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins/bootstrap-switch-button.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('custom/libs/animate.css/animate.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/plugins/bootstrap-switch-button.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('custom/libs/animate.css/animate.min.css')); ?>">
     <!-- font css -->
-    <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins/datepicker-bs5.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/tabler-icons.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/feather.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/fontawesome.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/fonts/material.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/plugins/datepicker-bs5.min.css')); ?>">
 
     <!-- vendor css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/customizer.css') }}">
-    <link rel="stylesheet" href="{{ asset('custom/css/custom.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/plugins/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('assets/css/customizer.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('custom/css/custom.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/jquery-ui.css')); ?>">
 
 
-    {{-- @if ($SITE_RTL == 'on')
-        <link rel="stylesheet" href="{{ asset('assets/css/style-rtl.css') }}" id="main-style-link">
-    @else
-        @if (isset($cust_darklayout) && $cust_darklayout == 'on')
-            <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}">
-        @else
-            <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
-        @endif
-    @endif --}}
+    
 
-    @if ($SITE_RTL == 'on')
-        <link rel="stylesheet" href="{{ asset('assets/css/style-rtl.css') }}">
-    @endif
-    @if (isset($cust_darklayout) && $cust_darklayout == 'on')
-        <link rel="stylesheet" href="{{ asset('assets/css/style-dark.css') }}">
-    @else
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    @endif
+    <?php if($SITE_RTL == 'on'): ?>
+        <link rel="stylesheet" href="<?php echo e(asset('assets/css/style-rtl.css')); ?>">
+    <?php endif; ?>
+    <?php if(isset($cust_darklayout) && $cust_darklayout == 'on'): ?>
+        <link rel="stylesheet" href="<?php echo e(asset('assets/css/style-dark.css')); ?>">
+    <?php else: ?>
+        <link rel="stylesheet" href="<?php echo e(asset('assets/css/style.css')); ?>">
+    <?php endif; ?>
 
-    @stack('old-datatable-css')
-    @stack('stylesheets')
+    <?php echo $__env->yieldPushContent('old-datatable-css'); ?>
+    <?php echo $__env->yieldPushContent('stylesheets'); ?>
 
 </head>
 
 
 
-{{-- <body class="theme-1"> --}}
 
-<body class="{{ $color }}">
-    <input type="hidden" id="sales_store" value="{{url('/')}}">
+
+<body class="<?php echo e($color); ?>">
+    <input type="hidden" id="sales_store" value="<?php echo e(url('/')); ?>">
     <div class="container-fluid px-2">
         <?php $lastsegment = request()->segment(count(request()->segments())); ?>
 
         <div class="row">
             <div class="col-12">
                 <div class="mt-2 pos-top-bar bg-primary d-flex justify-content-between">
-                    <span class="text-white">{{ __('Sales') }}</span>
-                    <a href="{{ route('home') }}" class="text-white"><i class="ti ti-home"
+                    <span class="text-white"><?php echo e(__('Sales')); ?></span>
+                    <a href="<?php echo e(route('home')); ?>" class="text-white"><i class="ti ti-home"
                             style="font-size: 20px;"></i> </a>
                 </div>
             </div>
@@ -138,11 +131,9 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="ti ti-search"></i></span>
                                     </div>
-                                    {{-- {{ Form::text('searchcustomers', null, ['class' => 'form-control pr-4 rounded-right', 'id' => 'searchcustomers', 'placeholder' => __('Search Customer')]) }}
-
-                                                {{ Form::hidden('vc_name_hidden', '', ['id' => 'vc_name_hidden']) }} --}}
-                                    <input id="searchproduct" type="text" data-url="{{ route('search.products') }}"
-                                        placeholder="{{ __('Search Product') }}"
+                                    
+                                    <input id="searchproduct" type="text" data-url="<?php echo e(route('search.products')); ?>"
+                                        placeholder="<?php echo e(__('Search Product')); ?>"
                                         class="form-control pr-4 rounded-right">
                                 </div>
                             </form>
@@ -167,41 +158,33 @@
                     <div class="card-header p-2">
                         <div class="row">
                             <div class="col-md-6">
-                                {{-- <div class="form-group">
-                                    {{ Form::label('branch_id', __('Branch'), ['class' => 'col-form-label']) }}
-                                    <div class="input-group">
-                                        {{ Form::select('branch_id', $branches , '', ['class' => 'form-control pos_branch_id' , 'placeholder' => 'Select Branch','id'=>'branches']) }}
-                                        {{ Form::hidden('brand_name_hidden', '',['id' => 'brand_name_hidden']) }}
-                                    </div>
-                                    <span id="error_branch_id" style="color: red"></span>
-                                </div> --}}
+                                
 
-                                {{-- if any error so commant following code and uncommant above code --}}
+                                
                                 <div class="form-group">
-                                    {{ Form::label('branch_id', __('Branch'), ['class' => 'col-form-label']) }}
+                                    <?php echo e(Form::label('branch_id', __('Branch'), ['class' => 'col-form-label'])); ?>
+
                                     <div class="input-group">
-                                        {{ Form::select('branch_id', ['' => __('Select Branch Type')], null, ['class' => 'form-control pos_branch_id ']) }}
+                                        <?php echo e(Form::select('branch_id', ['' => __('Select Branch Type')], null, ['class' => 'form-control pos_branch_id '])); ?>
+
                                     </div>
                                     <span id="error_branch_id" style="color: red"></span>
                                 </div>
-                                {{-- {{ Form::label('branch_id', __('Branch'), ['class' => 'col-form-label']) }}
-                                            {{ Form::select('branch_id', ['' => __('Select Branch Type')], null, ['class' => 'form-control']) }}
-                                            {{ Form::select('branch_id', $brands, null, ['class' => 'form-control select customer_select', 'data-toggle' => 'select2']) }}
-                                            {{ Form::hidden('vc_name_hidden', '',['id' => 'vc_name_hidden']) }} --}}
+                                
 
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    {{ Form::label('cash_register_id', __('Cash Register'), ['class' => 'col-form-label']) }}
+                                    <?php echo e(Form::label('cash_register_id', __('Cash Register'), ['class' => 'col-form-label'])); ?>
+
                                     <div class="input-group">
-                                        {{ Form::select('cash_register_id', ['' => __('Select Cash Register')], null, ['class' => 'form-control pos_cash_register_id']) }}
+                                        <?php echo e(Form::select('cash_register_id', ['' => __('Select Cash Register')], null, ['class' => 'form-control pos_cash_register_id'])); ?>
+
 
                                     </div>
 
                                 </div>
-                                {{-- {{ Form::select('cash_register_id', $cashregister, null, ['class' => 'form-control select warehouse_select', 'data-toggle' => 'select2']) }}
-                                            {{ Form::select('cash_register_id', ['' => __('Select Cash Register')], null, ['class' => 'form-control']) }}
-                                            {{ Form::hidden('brand_name_hidden', '',['id' => 'brand_name_hidden']) }} --}}
+                                
 
                             </div>
                         </div>
@@ -211,13 +194,15 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i data-feather="user"></i></span>
                                     </div>
-                                    {{ Form::text('searchcustomers', null, ['class' => 'form-control pr-4 rounded-right', 'id' => 'searchcustomers', 'placeholder' => __('Search Customer')]) }}
+                                    <?php echo e(Form::text('searchcustomers', null, ['class' => 'form-control pr-4 rounded-right', 'id' => 'searchcustomers', 'placeholder' => __('Search Customer')])); ?>
+
                                     <a href="#" id="clearinput">
                                         <div class="input-group-text">
                                             <i data-feather="x-square"></i>
                                         </div>
                                     </a>
-                                    {{ Form::hidden('vc_name_hidden', '', ['id' => 'vc_name_hidden']) }}
+                                    <?php echo e(Form::hidden('vc_name_hidden', '', ['id' => 'vc_name_hidden'])); ?>
+
                                 </div>
                                 <span id="error_customer_name" style="color: red"></span>
                             </div>
@@ -225,7 +210,7 @@
 
                     </div>
                     <div class="card-body carttable cart-product-list carttable-scroll" id="carthtml">
-                        @php $total = 0 @endphp
+                        <?php $total = 0 ?>
                         <div class="card-header card-body table-border-style">
 
                             <div class="table-responsive">
@@ -233,75 +218,77 @@
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th class="text-left">{{ __('Name') }}</th>
-                                            <th class="text-center">{{ __('QTY') }}</th>
-                                            <th class="text-center">{{ __('Tax') }}</th>
-                                            <th class="text-center">{{ __('Price') }}</th>
-                                            <th class="text-center">{{ __('Sub Total') }}</th>
+                                            <th class="text-left"><?php echo e(__('Name')); ?></th>
+                                            <th class="text-center"><?php echo e(__('QTY')); ?></th>
+                                            <th class="text-center"><?php echo e(__('Tax')); ?></th>
+                                            <th class="text-center"><?php echo e(__('Price')); ?></th>
+                                            <th class="text-center"><?php echo e(__('Sub Total')); ?></th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody">
-                                        @php $total = 0 @endphp
-                                        @if (session()->get($lastsegment) && !empty(session($lastsegment)) && count(session($lastsegment)) > 0)
-                                            @foreach (session($lastsegment) as $id => $details)
-                                                @php
+                                        <?php $total = 0 ?>
+                                        <?php if(session()->get($lastsegment) && !empty(session($lastsegment)) && count(session($lastsegment)) > 0): ?>
+                                            <?php $__currentLoopData = session($lastsegment); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $details): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php
                                                     $product = \App\Models\Product::find($details['id']);
                                                     $image_url = !empty($product->image) && Storage::exists($product->image) ? $product->image : 'logo/placeholder.png';
                                                     $total += $details['subtotal'];
-                                                @endphp
-                                                <tr data-product-id="{{ $id }}"
-                                                    id="product-id-{{ $id }}">
+                                                ?>
+                                                <tr data-product-id="<?php echo e($id); ?>"
+                                                    id="product-id-<?php echo e($id); ?>">
                                                     <td class="col-sm-3 cart-images">
                                                         <img alt="col-sm-3 Image placeholder"
-                                                            src="{{ asset(Storage::url($image_url)) }}"
+                                                            src="<?php echo e(asset(Storage::url($image_url))); ?>"
                                                             class="card-image avatar sale shadow hover-shadow-lg">
                                                     </td>
-                                                    <td class="col-sm-3 name">{{ $details['name'] }}</td>
+                                                    <td class="col-sm-3 name"><?php echo e($details['name']); ?></td>
                                                     <td>
                                                         <span class="col-sm-6 quantity buttons_added">
                                                             <input type="button" value="-" class="minus">
                                                             <input type="number" step="1" min="1"
                                                                 max="" name="quantity"
-                                                                title="{{ __('Quantity') }}" class="input-number"
-                                                                data-url="{{ url('update-cart/') }}"
-                                                                data-id="{{ $id }}" size="4"
-                                                                value="{{ $details['quantity'] }}">
+                                                                title="<?php echo e(__('Quantity')); ?>" class="input-number"
+                                                                data-url="<?php echo e(url('update-cart/')); ?>"
+                                                                data-id="<?php echo e($id); ?>" size="4"
+                                                                value="<?php echo e($details['quantity']); ?>">
                                                             <input type="button" value="+" class="plus">
                                                         </span>
                                                     </td>
-                                                    <td class="col-sm-3 tax">{{ $details['tax'] }}%</td>
+                                                    <td class="col-sm-3 tax"><?php echo e($details['tax']); ?>%</td>
                                                     <td class="col-sm-6 price text-center">
-                                                        {{ Auth::user()->priceFormat($details['price']) }}</td>
+                                                        <?php echo e(Auth::user()->priceFormat($details['price'])); ?></td>
                                                     <td class="col-sm-3 text-center">
                                                         <span
-                                                            class="subtotal">{{ Auth::user()->priceFormat($details['subtotal']) }}</span>
+                                                            class="subtotal"><?php echo e(Auth::user()->priceFormat($details['subtotal'])); ?></span>
                                                     </td>
 
                                                     <td class="col-sm-2 mt-2">
                                                         <a href="#" class="action-btn bg-danger bs-pass-para"
-                                                            data-confirm="{{ __('Are You Sure?') }}"
-                                                            data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
-                                                            data-confirm-yes="delete-form-{{ $id }}"
-                                                            title="{{ __('Delete') }}"
-                                                            data-id="{{ $id }}">
+                                                            data-confirm="<?php echo e(__('Are You Sure?')); ?>"
+                                                            data-text="<?php echo e(__('This action can not be undone. Do you want to continue?')); ?>"
+                                                            data-confirm-yes="delete-form-<?php echo e($id); ?>"
+                                                            title="<?php echo e(__('Delete')); ?>"
+                                                            data-id="<?php echo e($id); ?>">
                                                             <i class="ti ti-trash text-white mx-3 btn btn-sm"
-                                                                title="{{ __('Delete') }}"></i>
+                                                                title="<?php echo e(__('Delete')); ?>"></i>
                                                         </a>
-                                                        {!! Form::open(['method' => 'delete', 'url' => ['remove-from-cart'], 'id' => 'delete-form-' . $id]) !!}
+                                                        <?php echo Form::open(['method' => 'delete', 'url' => ['remove-from-cart'], 'id' => 'delete-form-' . $id]); ?>
+
                                                         <input type="hidden" name="session_key"
-                                                            value="{{ $lastsegment }}">
+                                                            value="<?php echo e($lastsegment); ?>">
                                                         <input type="hidden" name="id"
-                                                            value="{{ $id }}">
-                                                        {!! Form::close() !!}
+                                                            value="<?php echo e($id); ?>">
+                                                        <?php echo Form::close(); ?>
+
                                                     </td>
                                                 </tr>
-                                            @endforeach
-                                        @else
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php else: ?>
                                             <tr class="text-center no-found">
-                                                <td colspan="7">{{ __('No Data Found.!') }}</td>
+                                                <td colspan="7"><?php echo e(__('No Data Found.!')); ?></td>
                                             </tr>
-                                        @endif
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -310,46 +297,40 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h4 class="mb-0 text-gray-800">Total</h4>
                                         <h4 class="mb-0 text-gray-800" id="displaytotal">
-                                            {{ Auth::user()->priceFormat($total) }}</h4>
+                                            <?php echo e(Auth::user()->priceFormat($total)); ?></h4>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between pt-3"
                                         id="btn-pur">
-                                        {{-- <button type="button" class="btn btn-primary rounded"  data-ajax-popup="true" data-size="lg" data-align="centered" data-url="{{route('pos.create')}}" data-title="{{__('POS Invoice')}}"
-                                                                @if (session($lastsegment) && !empty(session($lastsegment)) && count(session($lastsegment)) > 0) @else disabled="disabled" @endif>
-                                                            {{ __('PAY') }}
-                                                        </button> --}}
+                                        
                                         <div class="tab-content">
                                             <button type="button" class="btn btn-primary rounded pay-btn"
                                                 style="width: 100%" id="pos_payment"
-                                                @if (session($lastsegment) && !empty(session($lastsegment)) && count(session($lastsegment)) > 0) @else disabled="disabled" @endif>{{ __('PAY') }}</button>
+                                                <?php if(session($lastsegment) && !empty(session($lastsegment)) && count(session($lastsegment)) > 0): ?> <?php else: ?> disabled="disabled" <?php endif; ?>><?php echo e(__('PAY')); ?></button>
 
                                             <a href="" id="pos_pay" data-ajax-popup="true" data-size="lg"
-                                                data-align="centered" data-url="{{ route('sales.create') }}"
-                                                data-title="{{ __('Sale Products') }}"></a>
+                                                data-align="centered" data-url="<?php echo e(route('sales.create')); ?>"
+                                                data-title="<?php echo e(__('Sale Products')); ?>"></a>
                                         </div>
 
 
-                                        {{-- <div class="tab-content">
-                                                        <button type="button" class="btn btn-primary rounded" style="width: 100%"
-                                                            data-ajax-popup="true" data-size="lg" data-align="centered"
-                                                            data-url="{{ route('sales.create') }}"
-                                                            data-title="{{ __('Sale Products') }}"
-                                                            @if (session($lastsegment) && !empty(session($lastsegment)) && count(session($lastsegment)) > 0) @else disabled="disabled" @endif>{{ __('PAY') }}</button>
-                                                        </div> --}}
+                                        
 
 
                                         <div class="tab-content btn-empty text-end">
                                             <a href="#" class="btn btn-danger bs-pass-para rounded m-0"
-                                                data-toggle="tooltip" data-original-title="{{ __('Empty Cart') }}"
-                                                data-confirm="{{ __('Are You Sure?') }}"
-                                                data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
+                                                data-toggle="tooltip" data-original-title="<?php echo e(__('Empty Cart')); ?>"
+                                                data-confirm="<?php echo e(__('Are You Sure?')); ?>"
+                                                data-text="<?php echo e(__('This action can not be undone. Do you want to continue?')); ?>"
                                                 data-confirm-yes="delete-form-emptycart">
-                                                {{ __('Empty Cart') }}
+                                                <?php echo e(__('Empty Cart')); ?>
+
                                             </a>
-                                            {!! Form::open(['method' => 'post', 'url' => ['empty-cart'], 'id' => 'delete-form-emptycart']) !!}
-                                            <input type="hidden" name="session_key" value="{{ $lastsegment }}"
+                                            <?php echo Form::open(['method' => 'post', 'url' => ['empty-cart'], 'id' => 'delete-form-emptycart']); ?>
+
+                                            <input type="hidden" name="session_key" value="<?php echo e($lastsegment); ?>"
                                                 id="empty_cart">
-                                            {!! Form::close() !!}
+                                            <?php echo Form::close(); ?>
+
                                         </div>
                                     </div>
                                 </div>
@@ -470,28 +451,28 @@
             </div>
         </div>
 
-        <script src="{{ asset('custom/js/jquery.min.js') }}"></script>
+        <script src="<?php echo e(asset('custom/js/jquery.min.js')); ?>"></script>
 
 
 
 
 
-        <script src="{{ asset('custom/js/jquery.form.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
-        <script src="{{ asset('js/select2/dist/js/select2.min.js') }}"></script>
+        <script src="<?php echo e(asset('custom/js/jquery.form.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/choices.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('js/select2/dist/js/select2.min.js')); ?>"></script>
 
-        <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/main.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/simple-datatables.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/bootstrap-switch-button.min.js') }}"></script>
-        <script src="{{ asset('custom/libs/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
-        <script src="{{ asset('assets/js/plugins/sweetalert2.all.min.js') }}"></script>
-        <script src="{{ asset('custom/libs/moment/moment.js') }}"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/popper.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/perfect-scrollbar.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/bootstrap.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/feather.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/main.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/simple-datatables.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/bootstrap-switch-button.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('custom/libs/bootstrap-notify/bootstrap-notify.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/sweetalert2.all.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('custom/libs/moment/moment.js')); ?>"></script>
 
-        <script src="{{ asset('js/custom.js') }}?v=2.0"></script>
+        <script src="<?php echo e(asset('js/custom.js')); ?>?v=2.0"></script>
 
         <script>
             if ($("#pc-dt-simple").length > 0) {
@@ -500,7 +481,7 @@
         </script>
 
         <!-- Apex Chart -->
-        <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
+        <script src="<?php echo e(asset('assets/js/plugins/apexcharts.min.js')); ?>"></script>
 
 
 
@@ -615,12 +596,12 @@
         </script>
 
 
-        <!-- @if (\App\Models\Utility::getValByName('gdpr_cookie') == 'on')
+        <!-- <?php if(\App\Models\Utility::getValByName('gdpr_cookie') == 'on'): ?>
             <script type="text/javascript">
                 var defaults = {
                     'messageLocales': {
                         /*'en': 'We use cookies to make sure you can have the best experience on our website. If you continue to use this site we assume that you will be happy with it.'*/
-                        'en': "{{ \App\Models\Utility::getValByName('cookie_text') }}"
+                        'en': "<?php echo e(\App\Models\Utility::getValByName('cookie_text')); ?>"
                     },
                     'buttonLocales': {
                         'en': 'Ok'
@@ -646,25 +627,25 @@
                 };
             </script>
 
-            <script src="{{ asset('js/cookie.notice.js') }}"></script>
-        @endif -->
+            <script src="<?php echo e(asset('js/cookie.notice.js')); ?>"></script>
+        <?php endif; ?> -->
 
 
 
 
         <script>
-            var toster_pos = "{{ $SITE_RTL == 'on' ? 'left' : 'right' }}";
+            var toster_pos = "<?php echo e($SITE_RTL == 'on' ? 'left' : 'right'); ?>";
         </script>
 
 
         <style type="text/css">
 
         </style>
-        {{-- <script src="{{ asset('js/jquery-ui.js') }}"></script> --}}
-        @stack('scripts')
+        
+        <?php echo $__env->yieldPushContent('scripts'); ?>
 
-        <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
-        <script src="{{ asset('js/jquery-ui.js') }}"></script>
+        <script src="<?php echo e(asset('js/jquery-ui.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('js/jquery-ui.js')); ?>"></script>
         <script>
             $.ajaxSetup({
                 headers: {
@@ -684,15 +665,15 @@
                 let price = $('.add_service_price').val();
                 let cost = $('.add_service_cost').val();
                 if(!ref_id) {
-                    show_toastr('{{ __('Error') }}', 'Ref No is required', 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Ref No is required', 'error');
                     return false;
                 }
                 if(!price) {
-                    show_toastr('{{ __('Error') }}', 'Price is required', 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Price is required', 'error');
                     return false;
                 }
                 if(!cost) {
-                    show_toastr('{{ __('Error') }}', 'Cost is required', 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Cost is required', 'error');
                     return false;
                 }
                 req_url = req_url+"?ref_id="+ref_id+"&price="+price+"&cost="+cost;
@@ -732,7 +713,7 @@
                     },
                     error: function(data) {
                         data = data.responseJSON;
-                        show_toastr('{{ __('Error') }}', data.error, 'error');
+                        show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                     }
                 });
             }
@@ -762,15 +743,15 @@
                 let price = $('.edit_service_price').val();
                 let cost = $('.edit_service_cost').val();
                 if(!ref_id) {
-                    show_toastr('{{ __('Error') }}', 'Ref No is required', 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Ref No is required', 'error');
                     return false;
                 }
                 if(!price) {
-                    show_toastr('{{ __('Error') }}', 'Price is required', 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Price is required', 'error');
                     return false;
                 }
                 if(!cost) {
-                    show_toastr('{{ __('Error') }}', 'Cost is required', 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', 'Cost is required', 'error');
                     return false;
                 }
                 req_url = req_url+"?ref_id="+ref_id+"&price="+price+"&cost="+cost;
@@ -799,7 +780,7 @@
                     },
                     error: function(data) {
                         data = data.responseJSON;
-                        show_toastr('{{ __('Error') }}', data.error, 'error');
+                        show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                     }
                 });
             }
@@ -813,7 +794,7 @@
                 $(function() {
                     getProductCategories();
 
-                    var url = '{{ route('search.products') }}'
+                    var url = '<?php echo e(route('search.products')); ?>'
                     searchProducts(url, '', '');
 
                 });
@@ -852,7 +833,7 @@
                             $("#tbody").empty();
                             $('.pay-btn').attr('disabled','disabled');
                             $("#tbody").html(
-                                '<tr class="text-center no-found"><td colspan="7">{{ __('No Data Found.!') }}</td></tr>'
+                                '<tr class="text-center no-found"><td colspan="7"><?php echo e(__('No Data Found.!')); ?></td></tr>'
                                 );
 
                         }
@@ -902,7 +883,7 @@
 
                     $.ajax({
                         type: 'GET',
-                        url: '{{ route('product.categories') }}',
+                        url: '<?php echo e(route('product.categories')); ?>',
                         success: function(data) {
                             // console.log(data);
                             $('#categories-listing').html(data);
@@ -949,7 +930,7 @@
                         },
                         error: function(data) {
                             data = data.responseJSON;
-                            show_toastr('{{ __('Error') }}', data.error, 'error');
+                            show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                         }
                     });
                 });
@@ -995,7 +976,7 @@
                             },
                             error: function(data) {
                                 data = data.responseJSON;
-                                show_toastr('{{ __('Error') }}', data.error, 'error');
+                                show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                             }
                         });
                     }
@@ -1007,7 +988,7 @@
                     var ele = $(this);
                     var sum = 0;
 
-                    if (confirm('{{ __('Are you sure?') }}')) {
+                    if (confirm('<?php echo e(__('Are you sure?')); ?>')) {
                         ele.closest(".row").hide(250, function() {
                             ele.closest(".row").parent().parent().remove();
                         });
@@ -1038,7 +1019,7 @@
                             },
                             error: function(data) {
                                 data = data.responseJSON;
-                                show_toastr('{{ __('Error') }}', data.error, 'error');
+                                show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                             }
                         });
                     }
@@ -1047,7 +1028,7 @@
                 $(document).on('click', '.btn-clear-cart', function(e) {
                     e.preventDefault();
 
-                    if (confirm('{{ __('Remove all items from cart?') }}')) {
+                    if (confirm('<?php echo e(__('Remove all items from cart?')); ?>')) {
 
                         $.ajax({
                             url: $(this).data('url'),
@@ -1059,7 +1040,7 @@
                             },
                             error: function(data) {
                                 data = data.responseJSON;
-                                show_toastr('{{ __('Error') }}', data.error, 'error');
+                                show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                             }
                         });
                     }
@@ -1077,7 +1058,7 @@
                     $(this).find('.card-title').removeClass('text-dark').addClass('text-white');
                     $(this).find('.card-title').parent().removeClass('text-dark').addClass('text-white');
                     $(this).parent().addClass('cat-active');
-                    var url = '{{ route('search.products') }}'
+                    var url = '<?php echo e(route('search.products')); ?>'
                     var warehouse_id=$('#branch_id').val();      //branches
 
 
@@ -1113,7 +1094,7 @@
                     },
                     error: function(data) {
                         data = data.responseJSON;
-                        show_toastr('{{ __('Error') }}', data.error, 'error');
+                        show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                     }
                 });
             });
@@ -1130,7 +1111,7 @@
 
 
             $.ajax({
-                url: '{{ route('user.type') }}',
+                url: '<?php echo e(route('user.type')); ?>',
                 dataType: 'json',
                 success: function(data) {
                     console.log(data);
@@ -1139,7 +1120,7 @@
                         // if (data[0].isOwner = 'false') {
                         if ((data[0].isOwner == true) && (data[0].isUser == false)) {
                             $.ajax({
-                                url: '{{ route('get.branches') }}',
+                                url: '<?php echo e(route('get.branches')); ?>',
                                 dataType: 'json',
                                 success: function(data) {
 
@@ -1173,7 +1154,7 @@
                                 },
                                 error: function(data) {
                                     data = data.responseJSON;
-                                    show_toastr('{{ __('Error') }}', data.error,
+                                    show_toastr('<?php echo e(__('Error')); ?>', data.error,
                                         'error');
                                 }
                             });
@@ -1200,7 +1181,7 @@
                 },
                 error: function(data) {
                     data = data.responseJSON;
-                    show_toastr('{{ __('Error') }}', data.error, 'error');
+                    show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                 }
             });
 
@@ -1209,7 +1190,7 @@
             $(document).on('change', '#branch_id', function(e) {
 
                 $.ajax({
-                    url: '{{ route('get.cash.registers') }}',
+                    url: '<?php echo e(route('get.cash.registers')); ?>',
                     dataType: 'json',
                     data: {
                         'branch_id': $(this).val()
@@ -1225,7 +1206,7 @@
                     },
                     error: function(data) {
                         data = data.responseJSON;
-                        show_toastr('{{ __('Error') }}', data.error, 'error');
+                        show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                     }
                 });
             });
@@ -1246,7 +1227,7 @@
             $("#searchcustomers").autocomplete({
                     minLength: 0,
                     source: function(request, response) {
-                        $.getJSON("{{ route('search.customers') }}", {
+                        $.getJSON("<?php echo e(route('search.customers')); ?>", {
                             search: request.term
                         }, response);
                     },
@@ -1278,21 +1259,22 @@
 
 
         <script>
-            var site_currency_symbol_position = '{{ \App\Models\Utility::getValByName('site_currency_symbol_position') }}';
-            var site_currency_symbol = '{{ \App\Models\Utility::getValByName('site_currency_symbol') }}';
+            var site_currency_symbol_position = '<?php echo e(\App\Models\Utility::getValByName('site_currency_symbol_position')); ?>';
+            var site_currency_symbol = '<?php echo e(\App\Models\Utility::getValByName('site_currency_symbol')); ?>';
         </script>
 
 
-        @if (Session::has('success'))
+        <?php if(Session::has('success')): ?>
             <script>
-                show_toastr("{{ __('Success') }}", "{!! session('success') !!}", 'success');
+                show_toastr("<?php echo e(__('Success')); ?>", "<?php echo session('success'); ?>", 'success');
             </script>
-        @endif
-        @if (Session::has('error'))
+        <?php endif; ?>
+        <?php if(Session::has('error')): ?>
             <script>
-                show_toastr("{{ __('Error') }}", "{!! session('error') !!}", 'error');
+                show_toastr("<?php echo e(__('Error')); ?>", "<?php echo session('error'); ?>", 'error');
             </script>
-        @endif
+        <?php endif; ?>
 </body>
 
 </html>
+<?php /**PATH /var/www/html/AsynchronousDigital/POSGo/resources/views/sales/index.blade.php ENDPATH**/ ?>

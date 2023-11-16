@@ -433,7 +433,7 @@ class ProductController extends Controller
                         $qtyHtml = '<small class="top-badge badge bg-danger mb-0">'. $product->getTotalProductQuantity() .'</small>';
                     }
                     $output .= '
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-12">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-12">
                             <div class="tab-pane fade show active toacart w-100" data-service-name="'.$product->name.'" data-is-service="'.$product->is_service.'" data-url="' . url('add-to-cart/' . $product->id . '/' . $lastsegment) .'">
                                 <div class="position-relative card">
                                     <img alt="Image placeholder" src="' . asset(Storage::url($image_url)) . '" class="card-image avatar shadow hover-shadow-lg" style=" height: 6rem; width: 100%;">

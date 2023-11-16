@@ -1223,3 +1223,15 @@ body.no-scroll{
     }
 }
 
+.document-list-icon-link {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: block;
+    border: 1px solid #ddd;
+}
+.document-list-icon {
+    width: 100%;
+
+}

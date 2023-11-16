@@ -40,4 +40,13 @@ class CustomerDocument extends Model
     {
         return self::TYPES[$this->type] ?? '';
     }
+
+    public function isImage()
+    {
+        if(@is_array(getimagesize(storage_path($this->file)))){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

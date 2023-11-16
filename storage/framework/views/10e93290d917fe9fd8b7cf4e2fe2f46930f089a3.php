@@ -126,7 +126,18 @@
                                                     <td><?php echo e($loop->iteration); ?></td>
                                                     <td><?php echo e($document->type_text); ?></td>
                                                     <td><?php echo e($document->description); ?></td>
-                                                    <td><a href="<?php echo e(asset('storage/'.$document->file)); ?>" target="_blank">View File</a></td>
+                                                    <td>
+                                                        <?php if($document->isImage()): ?>
+                                                            <a href="<?php echo e(asset('storage/'.$document->file)); ?>" class="document-list-icon-link" target="_blank">
+                                                                <img src="<?php echo e(asset('storage/'.$document->file)); ?>" alt="<?php echo e($document->name); ?>" class="document-list-icon">
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a href="<?php echo e(asset('storage/'.$document->file)); ?>" class="document-list-icon-link p-2" target="_blank">
+                                                                <img src="<?php echo e(asset('public/file.png')); ?>" alt="<?php echo e($document->name); ?>" class="document-list-icon">
+                                                            </a>
+                                                        <?php endif; ?>
+
+                                                    </td>
                                                     <td><?php echo e($document->expiration_date); ?></td>
                                                     <td>
                                                         <div class="action-btn bg-info ms-2">

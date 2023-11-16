@@ -110,7 +110,18 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $document->type_text }}</td>
                                                     <td>{{ $document->description }}</td>
-                                                    <td><a href="{{ asset('storage/'.$document->file) }}" target="_blank">View File</a></td>
+                                                    <td>
+                                                        @if($document->isImage())
+                                                            <a href="{{ asset('storage/'.$document->file) }}" class="document-list-icon-link" target="_blank">
+                                                                <img src="{{ asset('storage/'.$document->file) }}" alt="{{ $document->name }}" class="document-list-icon">
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ asset('storage/'.$document->file) }}" class="document-list-icon-link p-2" target="_blank">
+                                                                <img src="{{ asset('public/file.png') }}" alt="{{ $document->name }}" class="document-list-icon">
+                                                            </a>
+                                                        @endif
+
+                                                    </td>
                                                     <td>{{ $document->expiration_date }}</td>
                                                     <td>
                                                         <div class="action-btn bg-info ms-2">
