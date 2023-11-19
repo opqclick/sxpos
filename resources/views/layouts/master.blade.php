@@ -16,7 +16,7 @@ $seo_settings = \App\Models\Utility::getSeoSetting();
 if( app()->getLocale() == 'ar' || app()->getLocale() == 'he' ){
         $SITE_RTL = 'on';
     }
-    
+
 @endphp
 
 
@@ -44,7 +44,7 @@ if( app()->getLocale() == 'ar' || app()->getLocale() == 'he' ){
         <meta property="twitter:title" content="{{$seo_settings['meta_keywords']}}">
         <meta property="twitter:description" content="{{$seo_settings['meta_description']}}">
         <meta property="twitter:image" content="{{$logo.$seo_settings['meta_image']}}">
-    
+
     {{--  --}}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -82,7 +82,7 @@ if( app()->getLocale() == 'ar' || app()->getLocale() == 'he' ){
 
     @if ( isset($SITE_RTL) && $SITE_RTL == 'on' )
         <link rel="stylesheet" href="{{ asset('assets/css/style-rtl.css') }}">
-    
+
     @endif
 
     @if (Utility::getValByName('cust_darklayout') == 'on')
@@ -206,9 +206,9 @@ if( app()->getLocale() == 'ar' || app()->getLocale() == 'he' ){
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-6">
-                            <!--   {{ \App\Models\Utility::getValByName('footer_text') ? \App\Models\Utility::getValByName('footer_text') : config('app.name', 'POSGo') }} -->
+                            <!--   {{ \App\Models\Utility::getValByName('footer_text') ? \App\Models\Utility::getValByName('footer_text') : config('app.name', 'SxPos') }} -->
                             {{-- {{ __('Copyright') }} --}}
-                            {{ \App\Models\Utility::getValByName('footer_text') ? \App\Models\Utility::getValByName('footer_text') : config('app.name', 'POSGo Saas') }}
+                            {{ \App\Models\Utility::getValByName('footer_text') ? \App\Models\Utility::getValByName('footer_text') : config('app.name', 'SxPos') }}
                         </div>
                     </div>
                 </div>
