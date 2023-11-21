@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
@@ -211,7 +212,7 @@ class CustomerController extends Controller
                 [
                     'description' => 'required',
                     'type' => 'required',
-                    'file' => 'required',
+                    //'file' => 'required',
                     'expiration_date' => 'required',
                 ]
             );
@@ -227,14 +228,23 @@ class CustomerController extends Controller
             $document->expiration_date = $request->expiration_date;
             $document->created_by = Auth::user()->getCreatedBy();
 
-            if ($request->hasFile('file')) {
-                $filenameWithExt = $request->file('file')->getClientOriginalName();
+            if (isset($request->capture_file) && ($request->capture_file != '') && ($request->capture_file != null)) {
+
+                $ext = explode('/', mime_content_type($request->capture_file))[1];
+                $fileNameToStore = 'capture_'.rand(1000,9999).'_' . time() . '.' . $ext;
+                $logo_path = 'customer-document/';
+
+                Storage::disk('local')->put($logo_path . $fileNameToStore, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->capture_file)));
+
+                $document->file = $logo_path.$fileNameToStore;
+            } elseif ($request->hasFile('upload_file')) {
+                $filenameWithExt = $request->file('upload_file')->getClientOriginalName();
                 $filename        = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                $extension       = $request->file('file')->getClientOriginalExtension();
+                $extension       = $request->file('upload_file')->getClientOriginalExtension();
                 $fileNameToStore = $filename . '_' . time() . '.' . $extension;
 
                 $dir        = 'customer-document/';
-                $path = Utility::upload_file($request, 'file', $fileNameToStore, $dir, []);
+                $path = Utility::upload_file($request, 'upload_file', $fileNameToStore, $dir, []);
 
                 if ($path['flag'] == 1) {
                     $url = $path['url'];
@@ -243,6 +253,7 @@ class CustomerController extends Controller
                     return redirect()->back()->with('error', __($path['msg']));
                 }
             }
+
             $document->save();
             return redirect()->back()->with(['success' => 'Document successfully uploaded']);
 
@@ -289,9 +300,36 @@ class CustomerController extends Controller
             $document->description = $request->description;
             $document->type = $request->type;
             $document->expiration_date = $request->expiration_date;
+            $document->status = $request->status ?? 1;
             $document->created_by = Auth::user()->getCreatedBy();
 
-            if ($request->hasFile('file')) {
+            if (isset($request->capture_file) && ($request->capture_file != '') && ($request->capture_file != null)) {
+
+                $ext = explode('/', mime_content_type($request->capture_file))[1];
+                $fileNameToStore = 'capture_'.rand(1000,9999).'_' . time() . '.' . $ext;
+                $logo_path = 'customer-document/';
+
+                Storage::disk('local')->put($logo_path . $fileNameToStore, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->capture_file)));
+
+                $document->file = $logo_path.$fileNameToStore;
+            } elseif ($request->hasFile('upload_file')) {
+                $filenameWithExt = $request->file('upload_file')->getClientOriginalName();
+                $filename        = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension       = $request->file('upload_file')->getClientOriginalExtension();
+                $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+
+                $dir        = 'customer-document/';
+                $path = Utility::upload_file($request, 'upload_file', $fileNameToStore, $dir, []);
+
+                if ($path['flag'] == 1) {
+                    $url = $path['url'];
+                    $document->file = $url;
+                } else {
+                    return redirect()->back()->with('error', __($path['msg']));
+                }
+            }
+
+            /*if ($request->hasFile('file')) {
                 $filenameWithExt = $request->file('file')->getClientOriginalName();
                 $filename        = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                 $extension       = $request->file('file')->getClientOriginalExtension();
@@ -306,7 +344,7 @@ class CustomerController extends Controller
                 } else {
                     return redirect()->back()->with('error', __($path['msg']));
                 }
-            }
+            }*/
             $document->save();
             return redirect()->back()->with(['success' => 'Document successfully updated']);
 
@@ -350,7 +388,16 @@ class CustomerController extends Controller
             $customers = [];
             $search    = $request->search;
             if ($request->ajax() && isset($search) && !empty($search)) {
-                $customers = Customer::select('id as value', 'name as label', 'email')->where('is_active', '=', 1)->where('created_by', '=', Auth::user()->getCreatedBy())->Where('name', 'LIKE', '%' . $search . '%')->orWhere('email', 'LIKE', '%' . $search . '%')->get();
+                $customers = Customer::select('id as value', 'name as label', 'email')
+                    ->where('is_active', '=', 1)
+                    ->where('created_by', '=', Auth::user()->getCreatedBy())
+                    ->where(function ($q) use ($search) {
+                        $q->where('name', 'LIKE', '%' . $search . '%')
+                            ->orWhere('email', 'LIKE', '%' . $search . '%')
+                            ->orWhere('phone_number', 'LIKE', '%' . $search . '%');
+                    })
+
+                    ->get();
 
                 return json_encode($customers);
             }

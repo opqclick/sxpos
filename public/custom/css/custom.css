@@ -1235,3 +1235,26 @@ body.no-scroll{
     width: 100%;
 
 }
+.show-img-wrapper {
+    text-align: center;
+    border: 3px double #ddd;
+    padding: 20px 0;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-radius: 7px;
+}
+.show-img-wrapper:hover {
+    background-color: #dfdfdf;
+}
+.show-img-wrapper .output-img {
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+}
+#cameraVideo {
+    /*display: block;*/
+    /*margin: 0 auto;*/
+}
+.m-0-auto {
+    margin: 0 auto;
+}

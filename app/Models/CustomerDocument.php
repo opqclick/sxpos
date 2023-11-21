@@ -30,6 +30,7 @@ class CustomerDocument extends Model
         'type',
         'file',
         'expiration_date',
+        'status',
         'created_by',
         'updated_by',
     ];

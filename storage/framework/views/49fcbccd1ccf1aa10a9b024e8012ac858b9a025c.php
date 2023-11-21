@@ -22,7 +22,7 @@
          <?php if(trim($__env->yieldContent('page-title'))): ?>
              - <?php echo $__env->yieldContent('page-title'); ?>
          <?php endif; ?>
-         
+
      </title>
 
     
@@ -45,7 +45,7 @@
         <meta property="twitter:title" content="<?php echo e($seo_settings['meta_keywords']); ?>">
         <meta property="twitter:description" content="<?php echo e($seo_settings['meta_description']); ?>">
         <meta property="twitter:image" content="<?php echo e($logo.$seo_settings['meta_image']); ?>">
-   
+
     
      <meta charset="utf-8" />
      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -328,6 +328,7 @@
              show_toastr("<?php echo e(__('Error')); ?>", "<?php echo session('error'); ?>", 'error');
          </script>
      <?php endif; ?>
+ <?php echo $__env->yieldContent('custom_scripts'); ?>
  </body>
 
  </html>

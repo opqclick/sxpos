@@ -116,6 +116,7 @@
                                             <th><?php echo e(__('Description')); ?></th>
                                             <th><?php echo e(__('File')); ?> </th>
                                             <th><?php echo e(__('Expiration Date')); ?> </th>
+                                            <th><?php echo e(__('Status')); ?> </th>
                                             <th width="200px"><?php echo e(__('Action')); ?></th>
                                         </tr>
                                         </thead>
@@ -136,9 +137,9 @@
                                                                 <img src="<?php echo e(asset('public/file.png')); ?>" alt="<?php echo e($document->name); ?>" class="document-list-icon">
                                                             </a>
                                                         <?php endif; ?>
-
                                                     </td>
                                                     <td><?php echo e($document->expiration_date); ?></td>
+                                                    <td><?php echo e(($document->status == 1)?'Active':'Inactive'); ?></td>
                                                     <td>
                                                         <div class="action-btn bg-info ms-2">
                                                             <a href="#" class="mx-3 btn btn-sm d-inline-flex align-items-center"
@@ -186,6 +187,91 @@
             </div>
         </div>
     <?php endif; ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('custom_scripts'); ?>
+    <script>
+        function startCamera() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        // Set the video source to the user's camera stream
+                        var video = document.getElementById('cameraVideo');
+                        video.srcObject = stream;
+                        video.play();
+                        $("#cameraSection").slideDown();
+                        $("#showImgSection").slideUp();
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing the camera: ', error);
+                    });
+            } else {
+                console.error('getUserMedia is not supported in this browser');
+            }
+        }
+
+        function captureImage() {
+            var video = document.getElementById('cameraVideo');
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            var capturedImage = document.getElementById('capturedImage');
+            var filePreview = $('.show-img-wrapper .output-img');
+
+            // Draw the current video frame onto the canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert the canvas content to a data URL and set it as the source for the captured image
+            capturedImage.src = canvas.toDataURL('image/png');
+
+            $("#capturedImageInput").val(capturedImage.src);
+            // Show the captured image
+            // capturedImage.style.display = 'block';
+            filePreview.attr('src', capturedImage.src);
+            $('.show-img-wrapper .uploaded-img-name').html('Captured Image');
+
+            $("#cameraSection").slideUp();
+            $("#showImgSection").slideDown();
+        }
+
+        function handleFileSelect(event) {
+            var fileInput = event.target;
+            var defaultImage = "<?php echo e(asset('public/file.png')); ?>";
+            var filePreview = $('.show-img-wrapper .output-img');
+            var fileNameDisplay = $('.show-img-wrapper .uploaded-img-name');
+
+            // Reset the file preview and name display
+
+            fileNameDisplay.text('');
+
+            // Check if any file is selected
+            if (fileInput.files.length > 0) {
+                var file = fileInput.files[0];
+
+                // Display the file name
+                fileNameDisplay.text(file.name);
+
+                // Check if the file is an image
+                if (file.type && file.type.indexOf('image') !== -1) {
+                    // If it is an image, display the image preview
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        filePreview.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // If it is not an image, display a text message
+                    filePreview.attr('src', defaultImage);
+                }
+            }
+
+            $("#capturedImageInput").val("");
+        }
+
+        function cancelCapture() {
+            $("#cameraSection").slideUp();
+            $("#showImgSection").slideDown();
+        }
+    </script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/AsynchronousDigital/POSGo/resources/views/customers/edit.blade.php ENDPATH**/ ?>

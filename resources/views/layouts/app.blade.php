@@ -21,7 +21,7 @@
          @if (trim($__env->yieldContent('page-title')))
              - @yield('page-title')
          @endif
-         
+
      </title>
 
     {{-- seo --}}
@@ -44,7 +44,7 @@
         <meta property="twitter:title" content="{{$seo_settings['meta_keywords']}}">
         <meta property="twitter:description" content="{{$seo_settings['meta_description']}}">
         <meta property="twitter:image" content="{{$logo.$seo_settings['meta_image']}}">
-   
+
     {{--  --}}
      <meta charset="utf-8" />
      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -335,6 +335,7 @@
              show_toastr("{{ __('Error') }}", "{!! session('error') !!}", 'error');
          </script>
      @endif
+ @yield('custom_scripts')
  </body>
 
  </html>
