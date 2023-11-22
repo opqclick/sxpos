@@ -22,4 +22,9 @@ class SelledItems extends Model
     public function product(){
         return $this->hasOne('App\Models\Product', 'id', 'product_id');
     }
+
+    public function sale()
+    {
+        return $this->belongsTo('App\Models\Sale', 'sell_id', 'id');
+    }
 }

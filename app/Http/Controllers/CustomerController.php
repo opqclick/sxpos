@@ -397,7 +397,14 @@ class CustomerController extends Controller
                             ->orWhere('phone_number', 'LIKE', '%' . $search . '%');
                     })
 
-                    ->get();
+                    ->get()->map(function ($customer) {
+                        //check expired document
+                        $customer->expired_document = CustomerDocument::where('customer_id', $customer->value)
+                            ->where('status', 1)
+                            ->where('expiration_date', '<', date('Y-m-d'))
+                            ->count();
+                        return $customer;
+                    });
 
                 return json_encode($customers);
             }

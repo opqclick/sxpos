@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\SelledItems;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -434,7 +436,7 @@ class ProductController extends Controller
                     }
                     $output .= '
                             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-12">
-                            <div class="tab-pane fade show active toacart w-100" data-service-name="'.$product->name.'" data-is-service="'.$product->is_service.'" data-url="' . url('add-to-cart/' . $product->id . '/' . $lastsegment) .'">
+                            <div class="tab-pane fade show active toacart w-100" data-service-name="'.$product->name.'" data-id="'.$product->id.'" data-is-service="'.$product->is_service.'" data-url="' . url('add-to-cart/' . $product->id . '/' . $lastsegment) .'">
                                 <div class="position-relative card">
                                     <img alt="Image placeholder" src="' . asset(Storage::url($image_url)) . '" class="card-image avatar shadow hover-shadow-lg" style=" height: 6rem; width: 100%;">
                                     <div class="p-0 custom-card-body card-body d-flex ">
@@ -816,6 +818,91 @@ class ProductController extends Controller
                 ]
             );
         }
+    }
+
+    public function checkServiceHistory(Request $request, $id)
+    {
+        $product = Product::find($id);
+        $customer_id = $request->customer_id;
+
+        $dailyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereDate('created_at', Carbon::now())
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $weeklyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $monthlyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $yearlyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereYear('created_at', Carbon::now()->year)
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $html = '';
+        $html = '<div class="single-sale-total">
+                                            <div class="title">Daily Total </div>
+                                            <div class="amount">: '.$dailyTotal.'</div>
+                                            <div class="button"><a href="#">Details</a></div>
+                                        </div>';
+        $html .= '<div class="single-sale-total">
+                                            <div class="title">Weekly Total </div>
+                                            <div class="amount">: '.$weeklyTotal.'</div>
+                                            <div class="button"><a href="#">Details</a></div>
+                                        </div>';
+        $html .= '<div class="single-sale-total">
+                                            <div class="title">Monthly Total </div>
+                                            <div class="amount">: '.$monthlyTotal.'</div>
+                                            <div class="button"><a href="#">Details</a></div>
+                                        </div>';
+        $html .= '<div class="single-sale-total">
+                                            <div class="title">Year to date </div>
+                                            <div class="amount">: '.$yearlyTotal.'</div>
+                                            <div class="button"><a href="#">Details</a></div>
+                                        </div>';
+
+        return response()->json([
+            'status' => 200,
+            'html' => $html,
+        ]);
     }
 
     public function updateCart(Request $request)

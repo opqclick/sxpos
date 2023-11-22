@@ -1258,3 +1258,20 @@ body.no-scroll{
 .m-0-auto {
     margin: 0 auto;
 }
+.ui-menu .ui-menu-item.has_expired_document {
+    color: #9f9f9f;
+}
+.sale-total-wrapper .single-sale-total {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.sale-total-wrapper .single-sale-total .title {
+    flex-basis: 25%;
+    text-align: right;
+    padding-right: 8px;
+}
+.sale-total-wrapper .single-sale-total .amount {
+    flex-basis: 16%;
+    font-weight: 600;
+}

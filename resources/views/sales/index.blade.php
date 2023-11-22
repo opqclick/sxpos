@@ -218,6 +218,7 @@
                                         </div>
                                     </a>
                                     {{ Form::hidden('vc_name_hidden', '', ['id' => 'vc_name_hidden']) }}
+                                    <input type="hidden" name="hidden_customer_id" id="hidden_customer_id">
                                 </div>
                                 <p><strong>Customer :</strong> <span id="showCustomerName"></span></p>
                                 <span id="error_customer_name" style="color: red"></span>
@@ -422,6 +423,14 @@
                                     <div class="form-group">
                                         <label>Cost</label>
                                         <input type="number" name="cost" class="add_service_cost form-control" placeholder="Enter Service Cost">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="sale-total-wrapper" id="addServiceModalSaleHistory">
+
                                     </div>
                                 </div>
                             </div>
@@ -915,9 +924,24 @@
                 }
 
                 $(document).on('click', '.toacart', function() {
+                    let customer_selected = $("#vc_name_hidden").val();
+                    if(!customer_selected) {
+                        show_toastr('{{ __('Info') }}', 'Please select customer first', 'info');
+                        return false;
+                    }
                     if($(this).attr('data-is-service') == 1) {
                         $("#addServiceModalLabel").html($(this).attr('data-service-name'));
                         add_cart_service_url = $(this).attr('data-url');
+                        let customer_id = $("#hidden_customer_id").val();
+                        let service_check_url = "{{ url('check-service-history') }}/"+$(this).attr('data-id')+"?customer_id="+customer_id;
+
+                        $.ajax({
+                            url: service_check_url,
+
+                            success: function(data) {
+                                $("#addServiceModalSaleHistory").html(data.html);
+                            }
+                        });
                         $("#addServiceModal").modal('show');
                         return false;
                     }
@@ -1266,25 +1290,38 @@
                         if (term.length == 0) {
                             $("#vc_name_hidden").val('');
                             $("#showCustomerName").html('');
+                            $("#hidden_customer_id").val('');
                         }
                         if (term.length < 2) {
                             return false;
                         }
                     },
                     focus: function(event, ui) {
+                        if(ui.item.expired_document > 0) {
+                            return false;
+                        }
                         $("#searchcustomers, #vc_name_hidden").val(ui.item.label);
                         $("#showCustomerName").html(ui.item.label);
+                        $("#hidden_customer_id").val(ui.item.value);
                         return false;
                     },
                     select: function(event, ui) {
+                        if(ui.item.expired_document > 0) {
+                            show_toastr('{{ __('Error') }}', 'Please update the customer document', 'error');
+                            return false;
+                        }
                         $("#searchcustomers, #vc_name_hidden").val(ui.item.label);
                         $("#showCustomerName").html(ui.item.label);
+                        $("#hidden_customer_id").val(ui.item.value);
                         return false;
                     }
                 })
                 .autocomplete("instance")._renderItem = function(ul, item) {
-
-                    return $("<li>")
+                    let expired_class = '';
+                    if(item.expired_document > 0) {
+                        expired_class = 'has_expired_document';
+                    }
+                    return $("<li class='"+expired_class+"'>")
                         .append("<div>" + item.label + "<br>" + item.email + "</div>")
                         .appendTo(ul);
                 };

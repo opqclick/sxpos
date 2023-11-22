@@ -95,6 +95,7 @@ Route::resource('units', UnitController::class)->middleware(['auth','XSS']);
 
 Route::get('add-to-cart/{id}/{session}', [ProductController::class,'addToCart'])->middleware(['XSS']);
 Route::get('edit-service-cart/{id}', [ProductController::class,'editServiceCart'])->middleware(['XSS']);
+Route::get('check-service-history/{id}', [ProductController::class,'checkServiceHistory'])->middleware(['XSS']);
 Route::patch('update-cart', [ProductController::class,'updateCart'])->middleware(['XSS']);
 Route::delete('remove-from-cart', [ProductController::class,'removeFromCart'])->middleware(['XSS']);
 Route::post('empty-cart', [ProductController::class,'emptyCart'])->middleware(['XSS']);
