@@ -820,90 +820,6 @@ class ProductController extends Controller
         }
     }
 
-    public function checkServiceHistory(Request $request, $id)
-    {
-        $product = Product::find($id);
-        $customer_id = $request->customer_id;
-
-        $dailyTotal = SelledItems::with(['product','sale'])
-            ->where('is_service', 1)
-            ->whereHas('product', function ($q) use ($product) {
-                $q->where('category_id', $product->category_id);
-            })
-            ->whereHas('sale', function ($q) use ($customer_id) {
-                $q->where('customer_id', $customer_id);
-            })
-            ->whereDate('created_at', Carbon::now())
-            ->get()->sum(function($t){
-                return $t->price * $t->quantity;
-            });
-
-        $weeklyTotal = SelledItems::with(['product','sale'])
-            ->where('is_service', 1)
-            ->whereHas('product', function ($q) use ($product) {
-                $q->where('category_id', $product->category_id);
-            })
-            ->whereHas('sale', function ($q) use ($customer_id) {
-                $q->where('customer_id', $customer_id);
-            })
-            ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-            ->get()->sum(function($t){
-                return $t->price * $t->quantity;
-            });
-
-        $monthlyTotal = SelledItems::with(['product','sale'])
-            ->where('is_service', 1)
-            ->whereHas('product', function ($q) use ($product) {
-                $q->where('category_id', $product->category_id);
-            })
-            ->whereHas('sale', function ($q) use ($customer_id) {
-                $q->where('customer_id', $customer_id);
-            })
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->get()->sum(function($t){
-                return $t->price * $t->quantity;
-            });
-
-        $yearlyTotal = SelledItems::with(['product','sale'])
-            ->where('is_service', 1)
-            ->whereHas('product', function ($q) use ($product) {
-                $q->where('category_id', $product->category_id);
-            })
-            ->whereHas('sale', function ($q) use ($customer_id) {
-                $q->where('customer_id', $customer_id);
-            })
-            ->whereYear('created_at', Carbon::now()->year)
-            ->get()->sum(function($t){
-                return $t->price * $t->quantity;
-            });
-
-        $html = '';
-        $html = '<div class="single-sale-total">
-                                            <div class="title">Daily Total </div>
-                                            <div class="amount">: '.$dailyTotal.'</div>
-                                            <div class="button"><a href="#">Details</a></div>
-                                        </div>';
-        $html .= '<div class="single-sale-total">
-                                            <div class="title">Weekly Total </div>
-                                            <div class="amount">: '.$weeklyTotal.'</div>
-                                            <div class="button"><a href="#">Details</a></div>
-                                        </div>';
-        $html .= '<div class="single-sale-total">
-                                            <div class="title">Monthly Total </div>
-                                            <div class="amount">: '.$monthlyTotal.'</div>
-                                            <div class="button"><a href="#">Details</a></div>
-                                        </div>';
-        $html .= '<div class="single-sale-total">
-                                            <div class="title">Year to date </div>
-                                            <div class="amount">: '.$yearlyTotal.'</div>
-                                            <div class="button"><a href="#">Details</a></div>
-                                        </div>';
-
-        return response()->json([
-            'status' => 200,
-            'html' => $html,
-        ]);
-    }
 
     public function updateCart(Request $request)
     {
@@ -1062,6 +978,149 @@ class ProductController extends Controller
         }
 
         return view('products.receipt', compact('product', 'barcode', 'quantity'));
+    }
+
+    public function checkServiceHistory(Request $request, $id)
+    {
+        $product = Product::find($id);
+        $customer_id = $request->customer_id;
+
+        $dailyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereDate('created_at', Carbon::now())
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $weeklyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $monthlyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $yearlyTotal = SelledItems::with(['product','sale'])
+            ->where('is_service', 1)
+            ->whereHas('product', function ($q) use ($product) {
+                $q->where('category_id', $product->category_id);
+            })
+            ->whereHas('sale', function ($q) use ($customer_id) {
+                $q->where('customer_id', $customer_id);
+            })
+            ->whereYear('created_at', Carbon::now()->year)
+            ->get()->sum(function($t){
+                return $t->price * $t->quantity;
+            });
+
+        $html = '';
+        $html = '<div class="single-sale-total">
+                                            <div class="title">Daily Total </div>
+                                            <div class="amount">: '.$dailyTotal.'</div>
+                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/daily').'" target="_blank">Details</a></div>
+                                        </div>';
+        $html .= '<div class="single-sale-total">
+                                            <div class="title">Weekly Total </div>
+                                            <div class="amount">: '.$weeklyTotal.'</div>
+                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/weekly').'" target="_blank">Details</a></div>
+                                        </div>';
+        $html .= '<div class="single-sale-total">
+                                            <div class="title">Monthly Total </div>
+                                            <div class="amount">: '.$monthlyTotal.'</div>
+                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/monthly').'" target="_blank">Details</a></div>
+                                        </div>';
+        $html .= '<div class="single-sale-total">
+                                            <div class="title">Year to date </div>
+                                            <div class="amount">: '.$yearlyTotal.'</div>
+                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/yearly').'" target="_blank">Details</a></div>
+                                        </div>';
+
+        return response()->json([
+            'status' => 200,
+            'html' => $html,
+        ]);
+    }
+
+
+    public function serviceHistoryDetails($id, $customer_id, $type)
+    {
+        $product = Product::find($id);
+        if(empty($product)) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+        if($type == 'monthly') {
+            $sellItems = SelledItems::with(['product','sale'])
+                ->where('is_service', 1)
+                ->whereHas('product', function ($q) use ($product) {
+                    $q->where('category_id', $product->category_id);
+                })
+                ->whereHas('sale', function ($q) use ($customer_id) {
+                    $q->where('customer_id', $customer_id);
+                })
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->get();
+        } elseif ($type == 'weekly') {
+            $sellItems = SelledItems::with(['product','sale'])
+                ->where('is_service', 1)
+                ->whereHas('product', function ($q) use ($product) {
+                    $q->where('category_id', $product->category_id);
+                })
+                ->whereHas('sale', function ($q) use ($customer_id) {
+                    $q->where('customer_id', $customer_id);
+                })
+                ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                ->get();
+        } elseif ($type == 'yearly') {
+            $sellItems = SelledItems::with(['product','sale'])
+                ->where('is_service', 1)
+                ->whereHas('product', function ($q) use ($product) {
+                    $q->where('category_id', $product->category_id);
+                })
+                ->whereHas('sale', function ($q) use ($customer_id) {
+                    $q->where('customer_id', $customer_id);
+                })
+                ->whereYear('created_at', Carbon::now()->year)
+                ->get();
+        } else {
+            $type = 'daily';
+            $sellItems = SelledItems::with(['product','sale'])
+                ->where('is_service', 1)
+                ->whereHas('product', function ($q) use ($product) {
+                    $q->where('category_id', $product->category_id);
+                })
+                ->whereHas('sale', function ($q) use ($customer_id) {
+                    $q->where('customer_id', $customer_id);
+                })
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+        }
+        $category = Category::where('id', $product->category_id)->first();
+        return view('products.service_history_details', compact('sellItems', 'product', 'type', 'category'));
+
     }
 }
 
