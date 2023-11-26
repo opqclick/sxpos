@@ -384,34 +384,44 @@ class CustomerController extends Controller
 
     public function searchCustomers(Request $request)
     {
-        if (Auth::user()->can('Manage Customer')) {
-            $customers = [];
-            $search    = $request->search;
-            if ($request->ajax() && isset($search) && !empty($search)) {
-                $customers = Customer::select('id as value', 'name as label', 'email')
-                    ->where('is_active', '=', 1)
-                    ->where('created_by', '=', Auth::user()->getCreatedBy())
-                    ->where(function ($q) use ($search) {
-                        $q->where('name', 'LIKE', '%' . $search . '%')
-                            ->orWhere('email', 'LIKE', '%' . $search . '%')
-                            ->orWhere('phone_number', 'LIKE', '%' . $search . '%');
-                    })
+        try {
+            if (Auth::user()->can('Manage Customer')) {
+                $customers = [];
+                $search = $request->search;
+                if ($request->ajax() && isset($search) && !empty($search)) {
+                    $customers = Customer::select('id as value', 'name as label', 'email')
+                        ->where('is_active', '=', 1)
+                        ->where('created_by', '=', Auth::user()->getCreatedBy())
+                        ->where(function ($q) use ($search) {
+                            $q->where('name', 'LIKE', '%' . $search . '%')
+                                ->orWhere('email', 'LIKE', '%' . $search . '%')
+                                ->orWhere('phone_number', 'LIKE', '%' . $search . '%');
+                        })
+                        ->get()->map(function ($customer) {
+                            //check expired document
+                            $customer->expired_document = CustomerDocument::where('customer_id', $customer->value)
+                                ->where('status', 1)
+                                ->where('expiration_date', '<', date('Y-m-d'))
+                                ->count();
+                            return $customer;
+                        });
 
-                    ->get()->map(function ($customer) {
-                        //check expired document
-                        $customer->expired_document = CustomerDocument::where('customer_id', $customer->value)
-                            ->where('status', 1)
-                            ->where('expiration_date', '<', date('Y-m-d'))
-                            ->count();
-                        return $customer;
-                    });
+                    return json_encode($customers);
+                }
 
-                return json_encode($customers);
+                return $customers;
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Permission Denied",
+                ]);
+                return redirect()->back()->with('error', __('Permission denied.'));
             }
-
-            return $customers;
-        } else {
-            return redirect()->back()->with('error', __('Permission denied.'));
+        } catch (\Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 
