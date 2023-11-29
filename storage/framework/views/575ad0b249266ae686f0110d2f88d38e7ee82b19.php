@@ -413,6 +413,9 @@
                                     <div class="sale-total-wrapper" id="addServiceModalSaleHistory">
 
                                     </div>
+                                    <div class="serviceHistoryDetailsWrapper" style="display: none;">
+
+                                    </div>
                                 </div>
                             </div>
                             <div class="text-center">
@@ -726,6 +729,7 @@
                         show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
                     }
                 });
+                $(".serviceHistoryDetailsWrapper").slideUp();
             }
 
             var edit_service_url = '';
@@ -1220,6 +1224,23 @@
                 }
             });
 
+            function loadServiceHistoryDetails(button) {
+                let service_check_url = $(button).attr('data-href');
+
+                $.ajax({
+                    url: service_check_url,
+                    success: function(response) {
+
+                        if(response.status != 200) {
+                            show_toastr('<?php echo e(__('Error')); ?>', response.msg, 'error');
+                        } else {
+                            $(".serviceHistoryDetailsWrapper").html(response.html);
+                            $(".serviceHistoryDetailsWrapper").slideDown();
+                        }
+                    }
+                });
+            }
+
 
             // on change #branch_id change to #branches if any error
             $(document).on('change', '#branch_id', function(e) {
@@ -1288,7 +1309,8 @@
                     },
                     select: function(event, ui) {
                         if(ui.item.expired_document > 0) {
-                            show_toastr('<?php echo e(__('Error')); ?>', 'Please update the customer document', 'error');
+                            let alert_message = 'Please update the customer document. Expired Documents: '+ui.item.expired_document_types
+                            show_toastr('<?php echo e(__('Error')); ?>', alert_message, 'error');
                             return false;
                         }
                         $("#searchcustomers, #vc_name_hidden").val(ui.item.label);

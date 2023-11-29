@@ -399,10 +399,26 @@ class CustomerController extends Controller
                         })
                         ->get()->map(function ($customer) {
                             //check expired document
-                            $customer->expired_document = CustomerDocument::where('customer_id', $customer->value)
+                            $expired_document = CustomerDocument::where('customer_id', $customer->value)
                                 ->where('status', 1)
                                 ->where('expiration_date', '<', date('Y-m-d'))
-                                ->count();
+                                ->get();
+                            $customer->expired_document = count($expired_document);
+                            $expired_document_types = '';
+                            if (count($expired_document) > 0) {
+                                $sl = 0;
+                                foreach ($expired_document as $key => $value) {
+                                    if(($sl > 0) && ($sl < ($customer->expired_document))) {
+                                        $expired_document_types .= ' & '.$value->type_text . ', ';
+                                    } else {
+                                        $expired_document_types .= $value->type_text;
+                                    }
+
+
+                                    $sl++;
+                                }
+                            }
+                            $customer->expired_document_types = $expired_document_types;
                             return $customer;
                         });
 

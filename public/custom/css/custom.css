@@ -1265,6 +1265,7 @@ body.no-scroll{
     display: flex;
     justify-content: start;
     align-items: center;
+    cursor: pointer;
 }
 .sale-total-wrapper .single-sale-total .title {
     flex-basis: 25%;
@@ -1274,4 +1275,7 @@ body.no-scroll{
 .sale-total-wrapper .single-sale-total .amount {
     flex-basis: 16%;
     font-weight: 600;
+}
+#addServiceModal.modal.show .modal-dialog {
+    max-width: 98vw;
 }

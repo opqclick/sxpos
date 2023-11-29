@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Customer;
 use App\Models\SelledItems;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -1038,25 +1039,21 @@ class ProductController extends Controller
             });
 
         $html = '';
-        $html = '<div class="single-sale-total">
+        $html = '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/daily').'">
                                             <div class="title">Daily Total </div>
                                             <div class="amount">: '.$dailyTotal.'</div>
-                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/daily').'" target="_blank">Details</a></div>
                                         </div>';
-        $html .= '<div class="single-sale-total">
+        $html .= '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/weekly').'">
                                             <div class="title">Weekly Total </div>
                                             <div class="amount">: '.$weeklyTotal.'</div>
-                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/weekly').'" target="_blank">Details</a></div>
                                         </div>';
-        $html .= '<div class="single-sale-total">
+        $html .= '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/monthly').'">
                                             <div class="title">Monthly Total </div>
                                             <div class="amount">: '.$monthlyTotal.'</div>
-                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/monthly').'" target="_blank">Details</a></div>
                                         </div>';
-        $html .= '<div class="single-sale-total">
+        $html .= '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/yearly').'">
                                             <div class="title">Year to date </div>
                                             <div class="amount">: '.$yearlyTotal.'</div>
-                                            <div class="button"><a href="'.url("service-sale-history/".$id.'/'.$customer_id.'/yearly').'" target="_blank">Details</a></div>
                                         </div>';
 
         return response()->json([
@@ -1068,9 +1065,17 @@ class ProductController extends Controller
 
     public function serviceHistoryDetails($id, $customer_id, $type)
     {
+        if(!request()->ajax()) {
+            if(request()->forDev != 'true') {
+                abort(404);
+            }
+        }
         $product = Product::find($id);
         if(empty($product)) {
-            return redirect()->back()->with('error', 'Product not found.');
+            return response()->json([
+                'status' => 404,
+                'msg' => 'Invalid Product',
+            ]);
         }
         if($type == 'monthly') {
             $sellItems = SelledItems::with(['product','sale'])
@@ -1119,7 +1124,18 @@ class ProductController extends Controller
                 ->get();
         }
         $category = Category::where('id', $product->category_id)->first();
-        return view('products.service_history_details', compact('sellItems', 'product', 'type', 'category'));
+        $customer = Customer::where('id', $customer_id)->first();
+        $view = view('products.service_history_details', compact(
+            'sellItems',
+            'product',
+            'type',
+            'category',
+            'customer'
+        ))->render();
+        return response()->json([
+            'status' => 200,
+            'html' => $view,
+        ]);
 
     }
 }
