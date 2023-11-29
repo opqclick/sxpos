@@ -3,7 +3,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-header">
-                <h5>{{ strtoupper($type) }} {{ $category->name }} History for {{ $customer->name }}</h5>
+                <h5><span class="shd-type">{{ strtoupper($type) }}</span> <span class="shd-category-name">{{ $category->name }}</span> History for <span class="shd-customer-name">{{ $customer->name }}</span></h5>
             </div>
             <div class="card-body table-border-style">
                 @if(count($sellItems) > 0)

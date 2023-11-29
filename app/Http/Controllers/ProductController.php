@@ -1041,19 +1041,23 @@ class ProductController extends Controller
         $html = '';
         $html = '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/daily').'">
                                             <div class="title">Daily Total </div>
-                                            <div class="amount">: '.$dailyTotal.'</div>
+                                            <div class="separator">:</div>
+                                            <div class="amount">'.$dailyTotal.'</div>
                                         </div>';
         $html .= '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/weekly').'">
                                             <div class="title">Weekly Total </div>
-                                            <div class="amount">: '.$weeklyTotal.'</div>
+                                            <div class="separator">:</div>
+                                            <div class="amount"> '.$weeklyTotal.'</div>
                                         </div>';
         $html .= '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/monthly').'">
                                             <div class="title">Monthly Total </div>
-                                            <div class="amount">: '.$monthlyTotal.'</div>
+                                            <div class="separator">:</div>
+                                            <div class="amount">'.$monthlyTotal.'</div>
                                         </div>';
         $html .= '<div class="single-sale-total" onclick="loadServiceHistoryDetails(this)" data-href="'.url("service-sale-history/".$id.'/'.$customer_id.'/yearly').'">
                                             <div class="title">Year to date </div>
-                                            <div class="amount">: '.$yearlyTotal.'</div>
+                                            <div class="separator">:</div>
+                                            <div class="amount">'.$yearlyTotal.'</div>
                                         </div>';
 
         return response()->json([

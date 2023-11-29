@@ -1266,16 +1266,32 @@ body.no-scroll{
     justify-content: start;
     align-items: center;
     cursor: pointer;
+    color: var(--bs-link-color);
+    padding: 3px 0;
 }
 .sale-total-wrapper .single-sale-total .title {
     flex-basis: 25%;
     text-align: right;
     padding-right: 8px;
+    text-decoration: underline;
 }
 .sale-total-wrapper .single-sale-total .amount {
     flex-basis: 16%;
     font-weight: 600;
+    text-decoration: underline;
+}
+.sale-total-wrapper .single-sale-total .separator {
+    margin-right: 12px;
 }
 #addServiceModal.modal.show .modal-dialog {
     max-width: 98vw;
+}
+.shd-type {
+    color: #565656;
+}
+.shd-category-name {
+    color: #565656;
+}
+.shd-customer-name {
+    color: #565656;
 }
